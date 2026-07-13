@@ -1,0 +1,70 @@
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes terminal-caret-blink {
+  0%,
+  49% {
+    visibility: visible;
+  }
+  50%,
+  100% {
+    visibility: hidden;
+  }
+}
+
+.terminal-caret {
+  animation: terminal-caret-blink 1s steps(1, end) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .terminal-caret {
+    animation: none;
+  }
+}
+
+@keyframes ai-tool-logo-carousel {
+  0% {
+    transform: translate3d(0, var(--ai-tool-logo-offset), 0);
+  }
+  6%,
+  16% {
+    transform: translate3d(0, calc(var(--ai-tool-logo-offset) - 16px), 0);
+  }
+  22%,
+  32% {
+    transform: translate3d(0, calc(var(--ai-tool-logo-offset) - 32px), 0);
+  }
+  38%,
+  48% {
+    transform: translate3d(0, calc(var(--ai-tool-logo-offset) - 48px), 0);
+  }
+  54%,
+  64% {
+    transform: translate3d(0, calc(var(--ai-tool-logo-offset) - 64px), 0);
+  }
+  70%,
+  80% {
+    transform: translate3d(0, calc(var(--ai-tool-logo-offset) - 80px), 0);
+  }
+  86%,
+  100% {
+    transform: translate3d(0, calc(var(--ai-tool-logo-offset) - 96px), 0);
+  }
+}
+
+.ai-tool-logo-carousel-track {
+  transform: translate3d(0, var(--ai-tool-logo-offset), 0);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ai-tool-carousel-trigger:hover .ai-tool-logo-carousel-track {
+    animation: ai-tool-logo-carousel 4.8s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+  }
+}

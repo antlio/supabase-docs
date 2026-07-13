@@ -155,7 +155,7 @@ A bulletproof component is one that's reusable in contexts you didn't anticipate
 - **Accept `className` on the root.** Layout (size, spacing, position) is the parent's concern. A child that hardcodes `w-64` can't be reused at a different size.
 - **Handle the four states.** Loading, error, empty, and forbidden. If one of them is "impossible here", that's a comment worth writing, once. If it's just unhandled, that's a bug waiting.
 - **Co-locate types.** A component's props type lives in the same file. Export it only when the component is genuinely public.
-- **File order: exported component, subcomponents, helpers, static content, types.** Read top-to-bottom, don't make the reader scroll.
+- **File order: types and helpers first, exported component last.** Supporting declarations (types, static content, helper functions, subcomponents) come before the thing they support, so by the time the reader reaches the exported component every name it uses is already defined. The public export is the payoff at the bottom of the file.
 
 ## JSX & markup
 

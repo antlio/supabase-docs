@@ -54,7 +54,7 @@ If a checkbox below is failing on a PR, the PR is not mergeable. Fix the underly
 - [ ] Prop names don't duplicate the component's own context (`<Dialog isOpen />`, not `<Dialog isDialogOpen />`).
 - [ ] No new boolean prop that could be derived from an existing prop's presence/absence (e.g. `isClosable` when `onClose` already encodes the same intent).
 - [ ] Mutually exclusive states use a single `variant` enum prop, not multiple booleans (`<Button variant="primary" />`, not `<Button isPrimary isSecondary />`).
-- [ ] Component file order: exported component → subcomponents → helpers → static content → types.
+- [ ] Component file order: types → static content → helpers → subcomponents → exported component last.
 
 ## React 19 & Next.js
 
