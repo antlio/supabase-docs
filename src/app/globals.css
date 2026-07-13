@@ -1,34 +1,6 @@
 @import "tailwindcss";
-
-@theme {
-  --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-mono: var(--font-source-code-pro), ui-monospace, monospace;
-
-  --color-*: initial;
-  --color-transparent: transparent;
-  --color-current: currentColor;
-  --color-white: #fff;
-  --color-black: #000;
-
-  /* surfaces */
-  --color-background: oklch(20.3% 0.002 145.5); /* #161716 */
-  --color-surface: oklch(30% 0.002 145.5); /* #2D2E2D */
-
-  /* text */
-  --color-foreground: oklch(96.9% 0.002 145.6); /* #F4F5F4 */
-  --color-foreground-soft: oklch(87% 0.005 145.5); /* #D2D5D2 */
-  --color-foreground-muted: oklch(60% 0 0); /* #808080 */
-
-  /* brand */
-  --color-brand: oklch(43.7% 0.104 156.8); /* #006239 */
-  --color-brand-foreground: oklch(95% 0.003 165.1); /* #EDEFEE */
-  --color-accent: oklch(72.4% 0.178 155.4); /* #00C573 */
-
-  /* lines */
-  --color-border: rgb(255 255 255 / 8%); /* #FFFFFF14 */
-
-  --radius-xs: 2px;
-}
+@import "./theme.css";
+@import "./keyframes.css";
 
 body {
   background-color: var(--color-background);
