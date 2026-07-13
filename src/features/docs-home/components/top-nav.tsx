@@ -6,6 +6,7 @@ import { ChevronDownIcon } from "@/components/icons/chevron-down"
 import { CopyIcon } from "@/components/icons/copy"
 import { SupabaseWordmark } from "@/components/icons/supabase-wordmark"
 import { Button } from "@/components/ui/button"
+import { CollapsiblePanel, CollapsibleRoot, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
   MenuItem,
   MenuPopup,
@@ -17,6 +18,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { cn } from "@/lib/utils"
+import { dispatchAgentRevealChange } from "./agent-reveal-event"
 
 type TopNavProps = {
   className?: string
@@ -53,7 +55,7 @@ const CopyStateIcon = ({ copied }: { copied: boolean }) => (
   </span>
 )
 
-const DocsMenu = () => (
+const DocsPopoverMenu = () => (
   <MenuRoot>
     <MenuTrigger
       className={cn(
@@ -80,6 +82,51 @@ const DocsMenu = () => (
   </MenuRoot>
 )
 
+const DocsInlineMenu = () => (
+  <CollapsibleRoot className="group/docs-menu relative -mr-px after:pointer-events-none after:absolute after:bottom-0 after:right-0 after:top-16 after:w-px after:bg-border">
+    <div className="flex h-16 items-center gap-1.5 border-b border-dashed border-border px-3.5 group-data-[open]/docs-menu:border-transparent group-has-[[data-ending-style]]/docs-menu:border-transparent">
+      <a
+        href="https://supabase.com/docs"
+        aria-label="Supabase Docs"
+        className={cn(
+          "flex min-h-11 items-center rounded-xs outline-none",
+          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
+        )}
+      >
+        <SupabaseWordmark className="h-[18.66px] w-24" />
+      </a>
+      <CollapsibleTrigger
+        className={cn(
+          "h-11 w-auto gap-1.5 py-0 pb-0.5 text-[13px] font-medium leading-[1.1] text-brand-foreground",
+          "hover:text-brand-foreground",
+        )}
+        indicator={
+          <ChevronDownIcon className="size-[15px] text-foreground-muted transition-transform duration-75 ease-out group-data-[panel-open]:rotate-180 group-data-[panel-open]:duration-150" />
+        }
+      >
+        Docs
+      </CollapsibleTrigger>
+    </div>
+    <CollapsiblePanel className="box-content border-b border-dashed border-border bg-background">
+      <nav aria-label="Supabase sections" className="flex flex-col px-3.5 py-2">
+        {DOCS_MENU_ITEMS.map((item) => (
+          <a
+            key={item.label}
+            href={item.href}
+            className={cn(
+              "flex min-h-10 items-center rounded-xs pl-6.5 pr-2 text-[13px] font-medium text-foreground-soft outline-none",
+              "transition-colors duration-150 ease-out hover:bg-surface-raised/50 hover:text-foreground",
+              "focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent",
+            )}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+    </CollapsiblePanel>
+  </CollapsibleRoot>
+)
+
 const CopyMarkdownSplitButton = () => {
   const [copied, setCopied] = useState(false)
 
@@ -91,6 +138,8 @@ const CopyMarkdownSplitButton = () => {
 
   return (
     <div
+      onPointerEnter={() => dispatchAgentRevealChange(true)}
+      onPointerLeave={() => dispatchAgentRevealChange(false)}
       className={cn(
         "flex shrink-0 items-stretch overflow-hidden rounded-xs",
         "outline outline-1 -outline-offset-1 outline-border",
@@ -154,7 +203,7 @@ export const TopNav = ({ className }: TopNavProps) => (
             <SupabaseWordmark className="h-[18.66px] w-24" />
           </a>
           <div className="hidden sm:block">
-            <DocsMenu />
+            <DocsPopoverMenu />
           </div>
         </div>
         <div aria-hidden className="hidden h-full min-w-0 w-[512px] xl:block" />
@@ -166,18 +215,8 @@ export const TopNav = ({ className }: TopNavProps) => (
       <div aria-hidden className="hidden w-70 shrink-0 xl:block" />
     </header>
     <div className="pointer-events-none sticky top-0 z-50 -mt-16 hidden h-16 items-stretch xl:flex">
-      <div className="pointer-events-auto flex w-70 shrink-0 items-center gap-1.5 border-b border-dashed border-border bg-background px-3.5">
-        <a
-          href="https://supabase.com/docs"
-          aria-label="Supabase Docs"
-          className={cn(
-            "flex items-center rounded-xs outline-none",
-            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-          )}
-        >
-          <SupabaseWordmark className="h-[18.66px] w-24" />
-        </a>
-        <DocsMenu />
+      <div className="pointer-events-auto w-70 shrink-0 self-start bg-background">
+        <DocsInlineMenu />
       </div>
       <div
         aria-hidden

@@ -1,3 +1,14 @@
+import type { ComponentType } from "react"
+import { CliIcon } from "@/components/icons/cli"
+import { CSharpIcon } from "@/components/icons/csharp"
+import { FlutterIcon } from "@/components/icons/flutter"
+import { type IconProps } from "@/components/icons/icon-variants"
+import { JavaScriptIcon } from "@/components/icons/javascript"
+import { KotlinIcon } from "@/components/icons/kotlin"
+import { ManagementApiIcon } from "@/components/icons/management-api"
+import { PythonIcon } from "@/components/icons/python"
+import { SwiftIcon } from "@/components/icons/swift"
+import { UiIcon } from "@/components/icons/ui"
 import { CollapsiblePanel, CollapsibleRoot, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
 
@@ -5,7 +16,20 @@ type SidebarNavProps = {
   className?: string
 }
 
-const NAV_GROUPS = [
+type NavLink = {
+  label: string
+  href: string
+  icon?: ComponentType<IconProps>
+  badge?: "community" | "new"
+  separated?: boolean
+}
+
+type NavGroup = {
+  label: string
+  links: NavLink[]
+}
+
+const NAV_GROUPS: NavGroup[] = [
   {
     label: "Products",
     links: [
@@ -34,11 +58,44 @@ const NAV_GROUPS = [
   {
     label: "Reference",
     links: [
-      { label: "JavaScript", href: "https://supabase.com/docs/reference/javascript" },
-      { label: "Dart/Flutter", href: "https://supabase.com/docs/reference/dart" },
-      { label: "Python", href: "https://supabase.com/docs/reference/python" },
-      { label: "CLI", href: "https://supabase.com/docs/reference/cli" },
-      { label: "Management API", href: "https://supabase.com/docs/reference/api" },
+      {
+        label: "JavaScript",
+        href: "https://supabase.com/docs/reference/javascript",
+        icon: JavaScriptIcon,
+      },
+      { label: "Flutter", href: "https://supabase.com/docs/reference/dart", icon: FlutterIcon },
+      { label: "Swift", href: "https://supabase.com/docs/reference/swift", icon: SwiftIcon },
+      { label: "Python", href: "https://supabase.com/docs/reference/python", icon: PythonIcon },
+      {
+        label: "C#",
+        href: "https://supabase.com/docs/reference/csharp",
+        icon: CSharpIcon,
+        badge: "community",
+      },
+      {
+        label: "Kotlin",
+        href: "https://supabase.com/docs/reference/kotlin",
+        icon: KotlinIcon,
+        badge: "community",
+      },
+      {
+        label: "Server SDK",
+        href: "https://supabase.com/docs/reference/server",
+        icon: JavaScriptIcon,
+        badge: "new",
+        separated: true,
+      },
+      {
+        label: "CLI Commands",
+        href: "https://supabase.com/docs/reference/cli/introduction",
+        icon: CliIcon,
+      },
+      {
+        label: "Management API",
+        href: "https://supabase.com/docs/reference/api/introduction",
+        icon: ManagementApiIcon,
+      },
+      { label: "UI Library", href: "https://supabase.com/ui", icon: UiIcon },
     ],
   },
   {
@@ -49,7 +106,7 @@ const NAV_GROUPS = [
       { label: "Changelog", href: "https://supabase.com/changelog" },
     ],
   },
-] as const
+]
 
 // sidebar from paper node f87-0
 // quickstart link plus five collapsible groups, all collapsed by default
@@ -72,22 +129,51 @@ export const SidebarNav = ({ className }: SidebarNavProps) => (
         <CollapsibleRoot key={group.label}>
           <CollapsibleTrigger>{group.label}</CollapsibleTrigger>
           <CollapsiblePanel>
-            <ul className="flex flex-col pb-1 pl-3 border-l border-border">
-              {group.links.map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    className={cn(
-                      "flex h-8 items-center rounded-xs py-1.5 text-[13px] leading-[1.43]",
-                      "text-foreground-muted outline-none",
-                      "transition-colors duration-150 ease-out hover:text-foreground",
-                      "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent",
-                    )}
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
+            <ul
+              className={cn(
+                "flex flex-col border-l border-border pb-1",
+                group.label === "Reference" ? "pl-1" : "pl-3",
+              )}
+            >
+              {group.links.map((link) => {
+                const Icon = link.icon
+
+                return (
+                  <li key={link.href} className={cn(link.separated && "pt-1")}>
+                    <a
+                      href={link.href}
+                      className={cn(
+                        "flex h-8 items-center rounded-xs text-[13px] outline-none",
+                        Icon
+                          ? "group gap-2 rounded-md p-2 font-medium leading-none text-foreground-subtle"
+                          : "py-1.5 leading-[1.43] text-foreground-muted",
+                        "transition-colors duration-150 ease-out hover:text-foreground",
+                        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent",
+                      )}
+                    >
+                      {Icon && (
+                        <Icon
+                          size="md"
+                          className="text-foreground-muted transition-colors duration-150 ease-out group-hover:text-foreground-subtle"
+                        />
+                      )}
+                      <span className={cn(Icon && "min-w-0 flex-1 whitespace-nowrap")}>
+                        {link.label}
+                      </span>
+                      {link.badge && (
+                        <span
+                          className={cn(
+                            "shrink-0 whitespace-nowrap rounded-xs bg-surface-raised px-1.5 py-0.5 text-xs font-medium leading-[1.1] text-foreground-subtle shadow-raised",
+                            link.badge === "new" && "bg-brand/20 text-accent",
+                          )}
+                        >
+                          {link.badge === "new" ? "New" : "Community"}
+                        </span>
+                      )}
+                    </a>
+                  </li>
+                )
+              })}
             </ul>
           </CollapsiblePanel>
         </CollapsibleRoot>

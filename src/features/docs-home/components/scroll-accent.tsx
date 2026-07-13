@@ -29,9 +29,11 @@ const TOP_LOCK_SCROLL_Y = 64
 const DOT_STAGGER_MS = 80
 const LINE_START_GAP_MS = 50
 const LINE_STAGGER_MS = 30
+const LINE_RESET_STAGGER_MS = 12
 const ACCENT_HALF_SIZE = 10
 const ACCENT_LEFT_OFFSET = 11.5
 const ACCENT_TOP_OFFSET = 10.5
+const OBSERVER_ROOT_MARGIN = "-36% 0px -36% 0px"
 
 const getCornerPosition = (corner: AccentCorner, targetRect: DOMRect, rootRect: DOMRect) => {
   const left = targetRect.left - rootRect.left
@@ -114,6 +116,9 @@ export const ScrollAccent = ({ className }: ScrollAccentProps) => {
     const resetExistingDetails = () => {
       clearDetailTimeouts()
 
+      const artworkDetails = root.querySelectorAll<HTMLElement>("[data-scroll-accent-art]")
+      artworkDetails.forEach((artwork) => artwork.removeAttribute("data-active"))
+
       const dots = root.querySelectorAll<HTMLElement>("[data-scroll-accent-existing-dot]")
       dots.forEach((dot) => dot.removeAttribute("data-active"))
 
@@ -124,7 +129,7 @@ export const ScrollAccent = ({ className }: ScrollAccentProps) => {
         lineAnimationTimeouts.push(
           window.setTimeout(
             () => line.removeAttribute("data-active"),
-            prefersReducedMotion ? 0 : index * LINE_STAGGER_MS,
+            prefersReducedMotion ? 0 : index * LINE_RESET_STAGGER_MS,
           ),
         )
       })
@@ -146,6 +151,11 @@ export const ScrollAccent = ({ className }: ScrollAccentProps) => {
       const targetLines = Array.from(
         targetContainer?.querySelectorAll<HTMLElement>("[data-scroll-accent-existing-line]") ?? [],
       )
+      const targetArtwork = Array.from(
+        targetContainer?.querySelectorAll<HTMLElement>("[data-scroll-accent-art]") ?? [],
+      )
+
+      targetArtwork.forEach((artwork) => artwork.setAttribute("data-active", ""))
       targetLines.forEach((line) => line.removeAttribute("data-active"))
 
       targetDots.forEach((dot, index) => {
@@ -189,9 +199,8 @@ export const ScrollAccent = ({ className }: ScrollAccentProps) => {
 
     accent.addEventListener("transitionend", onAccentTransitionEnd)
 
-    const activateSentinel = (sentinel: HTMLElement) => {
-      if (sentinel === activeSentinel) return
-      const isForwardEntry = sentinels.indexOf(sentinel) > sentinels.indexOf(activeSentinel)
+    const activateSentinel = (sentinel: HTMLElement, forceReset = false) => {
+      if (!forceReset && sentinel === activeSentinel) return
       activeSentinel = sentinel
       pendingDetailsSentinel = null
       resetExistingDetails()
@@ -200,7 +209,7 @@ export const ScrollAccent = ({ className }: ScrollAccentProps) => {
 
       if (sentinel.dataset.scrollAccentCorner === "top-left") {
         accentSentinel = sentinel
-        pendingDetailsSentinel = isForwardEntry ? sentinel : null
+        pendingDetailsSentinel = sentinel
         const hasMoved = positionAccent(accentSentinel, true)
 
         if (prefersReducedMotion || !hasMoved) completePendingDetails()
@@ -228,7 +237,7 @@ export const ScrollAccent = ({ className }: ScrollAccentProps) => {
 
         activateSentinel(nextSentinel)
       },
-      { rootMargin: "-49% 0px -49% 0px", threshold: 0 },
+      { rootMargin: OBSERVER_ROOT_MARGIN, threshold: 0 },
     )
 
     sentinels.forEach((sentinel) => observer.observe(sentinel))
@@ -240,7 +249,7 @@ export const ScrollAccent = ({ className }: ScrollAccentProps) => {
       topLocked = nextTopLocked
       if (topLocked) {
         pendingSentinel = null
-        activateSentinel(sentinels[0])
+        activateSentinel(sentinels[0], true)
       } else if (pendingSentinel) {
         activateSentinel(pendingSentinel)
         pendingSentinel = null
@@ -272,7 +281,7 @@ export const ScrollAccent = ({ className }: ScrollAccentProps) => {
       data-scroll-accent
       aria-hidden
       className={cn(
-        "pointer-events-none absolute left-0 top-0 z-100 flex size-5 items-center justify-center bg-background opacity-0",
+        "pointer-events-none absolute left-0.25 top-0 z-100 hidden size-5 items-center justify-center bg-background opacity-0 sm:flex",
         "transition-[transform,opacity] duration-400 ease-[cubic-bezier(0.77,0,0.175,1)] [will-change:transform]",
         "motion-reduce:transition-opacity motion-reduce:duration-150",
         className,
