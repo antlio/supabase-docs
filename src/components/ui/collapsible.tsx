@@ -4,7 +4,9 @@ import { Collapsible as BaseCollapsible } from "@base-ui-components/react/collap
 import { ChevronRightIcon } from "@/components/icons/chevron-right"
 import { cn } from "@/lib/utils"
 
-type CollapsibleTriggerProps = React.ComponentProps<typeof BaseCollapsible.Trigger>
+type CollapsibleTriggerProps = React.ComponentProps<typeof BaseCollapsible.Trigger> & {
+  indicator?: React.ReactNode
+}
 type CollapsiblePanelProps = React.ComponentProps<typeof BaseCollapsible.Panel>
 
 export const CollapsibleRoot = BaseCollapsible.Root
@@ -12,6 +14,7 @@ export const CollapsibleRoot = BaseCollapsible.Root
 export const CollapsibleTrigger = ({
   className,
   children,
+  indicator,
   ref,
   ...props
 }: CollapsibleTriggerProps) => (
@@ -27,7 +30,9 @@ export const CollapsibleTrigger = ({
     {...props}
   >
     {children}
-    <ChevronRightIcon className="size-[15px] text-foreground-muted transition-transform duration-150 ease-out group-data-[panel-open]:rotate-90" />
+    {indicator ?? (
+      <ChevronRightIcon className="size-[15px] text-foreground-muted transition-transform duration-150 ease-out group-data-[panel-open]:rotate-90" />
+    )}
   </BaseCollapsible.Trigger>
 )
 

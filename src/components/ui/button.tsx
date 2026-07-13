@@ -8,11 +8,11 @@ const RAISED_SHADOW = "shadow-[var(--shadow-raised)]"
 
 const OUTLINE_SHADOW = "[filter:drop-shadow(var(--shadow-outline))]"
 
-const buttonVariants = cva(
+export const buttonVariants = cva(
   cn(
     "inline-flex items-center rounded-xs text-[13px] font-medium leading-[1.1] select-none",
     "transition-[background-color,box-shadow,transform] duration-150 ease-out",
-    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent",
+    "focus:outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent",
     "active:scale-[0.98]",
     "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
     "[&>svg]:size-3.5 [&>svg]:shrink-0",
