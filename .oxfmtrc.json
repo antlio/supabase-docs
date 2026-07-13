@@ -1,0 +1,4 @@
+{
+  "semi": false,
+  "ignorePatterns": [".next", "node_modules", "research", "assets", "**/*.md"]
+}
