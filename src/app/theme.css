@@ -2,6 +2,7 @@
   --font-sans: var(--font-inter), system-ui, sans-serif;
   --font-mono: var(--font-roboto-mono), ui-monospace, monospace;
   --font-label: var(--font-manrope), var(--font-inter), system-ui, sans-serif;
+  --breakpoint-paper: 94.5rem;
 
   --color-*: initial;
   --color-transparent: transparent;
@@ -29,6 +30,10 @@
   --color-brand-foreground: oklch(95% 0.003 165.1); /* #EDEFEE */
   --color-on-brand: oklch(97% 0.003 165.1);
   --color-accent: oklch(72.4% 0.178 155.4); /* #00C573 */
+  --color-logo-green: oklch(76.2% 0.154 159.355); /* #3ECF8E */
+  --color-logo-green-dark: oklch(59% 0.124 158.623); /* #249361 */
+  --color-module-cube-active-top: oklch(37.7% 0.089 156.8);
+  --color-module-cube-active-left: oklch(30% 0.071 156.8);
 
   /* celebration */
   --color-firework-green: oklch(0.762 0.154 159.355); /* #3ECF8E */
@@ -40,6 +45,7 @@
 
   /* lines */
   --color-border: oklch(100% 0 0 / 8%);
+  --color-module-cube-outline: oklch(100% 0 0 / 25%);
 
   /* decorative corner dots */
   --color-dot: oklch(24.9% 0.004 205.5);
@@ -79,6 +85,7 @@
   --color-accent: oklch(50% 0.14 155.4);
 
   --color-border: oklch(25% 0.004 145.5 / 13%);
+  --color-module-cube-outline: oklch(0% 0 0 / 20%);
   --color-dot: oklch(88% 0.003 145.5);
   --color-dot-soft: oklch(78% 0.002 145.5);
   --color-dot-hover: oklch(62% 0.003 145.5);
