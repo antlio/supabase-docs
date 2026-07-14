@@ -2,35 +2,44 @@ import { cn } from "@/lib/utils"
 
 const TILE_SHADOW = "shadow-[var(--shadow-raised)]"
 
-export const LinkTile = ({ icon, label, href, className }: LinkTileProps) => (
+export const LinkTile = ({
+  icon,
+  label,
+  href,
+  active = false,
+  className,
+  ...props
+}: LinkTileProps) => (
   <a
+    {...props}
     href={href}
     className={cn(
-      "group/tile flex min-h-11 items-center gap-3 px-4 sm:h-10 sm:min-h-0 sm:px-8",
-      "focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent",
+      "group/focus flex min-h-11 items-center px-4 outline-none sm:h-10 sm:min-h-0 sm:px-8",
       className,
     )}
   >
-    <span
-      className={cn(
-        "flex size-10 shrink-0 items-center justify-center overflow-clip rounded-xs",
-        "border border-border bg-background",
-        TILE_SHADOW,
-        "transition-colors duration-150 ease-out",
-        "group-hover/tile:border-foreground/40",
-      )}
-    >
-      <span className="flex size-[18px] shrink-0 items-center justify-center">{icon}</span>
-    </span>
-    <span className="w-max font-label text-[15px] font-semibold leading-[1.5] text-brand-foreground">
-      {label}
+    <span className="flex items-center gap-3 rounded-xs group-focus-visible/focus:outline group-focus-visible/focus:outline-2 group-focus-visible/focus:outline-accent">
+      <span
+        className={cn(
+          "flex size-10 shrink-0 items-center justify-center overflow-clip rounded-xs",
+          "border border-border bg-background",
+          TILE_SHADOW,
+          "transition-colors duration-150 ease-out group-hover/focus:bg-surface-raised/50",
+          active && "bg-surface-raised/50",
+        )}
+      >
+        <span className="flex size-[18px] shrink-0 items-center justify-center">{icon}</span>
+      </span>
+      <span className="w-max font-label text-[15px] font-semibold leading-[1.5] text-brand-foreground">
+        {label}
+      </span>
     </span>
   </a>
 )
 
-export type LinkTileProps = {
+export type LinkTileProps = Omit<React.ComponentProps<"a">, "children" | "href"> & {
   icon: React.ReactNode
   label: string
   href: string
-  className?: string
+  active?: boolean
 }

@@ -2,16 +2,20 @@ import { iconVariants, type IconProps } from "@/components/icons/icon-variants"
 
 export const AuthIcon = ({ size, className }: IconProps) => (
   <svg
-    viewBox="0 0 18 18"
-    className={iconVariants({ size: size ?? "lg", className })}
+    viewBox="0 0 15 15"
+    className={iconVariants({ size: size ?? "sm", className })}
     fill="none"
     aria-hidden
   >
     <path
-      d="M4.16 12.1H10.14V14.35H4.16V12.1ZM4.16 12.1V9.85H10.14V12.1M12.09 6.75V4.5C12.09 3.14 10.98 2.03 9.62 2.03C8.26 2.03 7.16 3.14 7.16 4.5V6.75M4.31 9V14.625C4.31 15.868 5.317 16.875 6.56 16.875H12.185C13.428 16.875 14.435 15.868 14.435 14.625V9C14.435 7.757 13.428 6.75 12.185 6.75H6.56C5.317 6.75 4.31 7.757 4.31 9Z"
-      stroke="var(--color-brand)"
-      strokeWidth="1.125"
-      strokeLinejoin="bevel"
+      d="M5.25 6a.75.75 0 0 1-.75-.75V3a1.5 1.5 0 0 0-3 0v2.25a.75.75 0 0 1-1.5 0V3a3 3 0 0 1 6 0v2.25a.75.75 0 0 1-.75.75Z"
+      transform="translate(4.5 1.5)"
+      fill="currentColor"
+    />
+    <path
+      d="M8.75 0h-6.5A2.25 2.25 0 0 0 0 2.25v3A2.25 2.25 0 0 0 2.25 7.5h6.5A2.25 2.25 0 0 0 11 5.25v-3A2.25 2.25 0 0 0 8.75 0ZM6.25 4.25a.75.75 0 0 1-1.5 0v-1a.75.75 0 0 1 1.5 0v1Z"
+      transform="translate(2 6)"
+      fill="currentColor"
     />
   </svg>
 )

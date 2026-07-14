@@ -15,7 +15,7 @@ export const DocsShell = ({ sidebar, children, className }: DocsShellProps) => (
     <aside className="sticky top-16 hidden max-h-[calc(100dvh-4rem)] w-70 shrink-0 self-start overflow-y-auto xl:block">
       {sidebar}
     </aside>
-    <div className="min-w-0 w-full flex-1 basis-[952px]">{children}</div>
+    <main className="min-w-0 w-full flex-1 basis-[952px]">{children}</main>
     <div aria-hidden className="hidden w-70 shrink-0 xl:block" />
     <ScrollAccent />
   </div>

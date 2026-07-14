@@ -1,4 +1,3 @@
-import Image from "next/image"
 import { SlashSpacer } from "@/components/common/slash-rule"
 import { AiVectorsIcon } from "@/components/icons/ai-vectors"
 import { CronIcon } from "@/components/icons/cron"
@@ -6,6 +5,7 @@ import { DataRestIcon } from "@/components/icons/data-rest"
 import { GraphqlIcon } from "@/components/icons/graphql"
 import { QueuesIcon } from "@/components/icons/queues"
 import { cn } from "@/lib/utils"
+import { ModulesCubeArt } from "./modules-cube-art"
 import { ScrollAccentAnchors } from "./scroll-accent"
 
 type Module = {
@@ -32,14 +32,7 @@ export const ModulesSection = ({ className }: ModulesSectionProps) => (
     <section className="relative flex flex-col md:flex-row">
       <ScrollAccentAnchors corners={["top-left"]} />
       <div className="flex w-full shrink-0 items-center justify-center border border-border px-4 py-8 md:w-[54%] xl:w-[512px]">
-        <Image
-          src="/art/modules-cube.svg"
-          alt=""
-          width={440}
-          height={280}
-          unoptimized
-          className="h-auto w-full max-w-[440px]"
-        />
+        <ModulesCubeArt />
       </div>
       <div className="flex flex-1 flex-col justify-center gap-6 p-8 sm:p-12 xl:p-16">
         <h2 className="text-2xl font-medium leading-[30px] text-foreground">Modules</h2>

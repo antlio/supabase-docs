@@ -9,7 +9,7 @@ type AsciiFireworksProps = {
   className?: string
 }
 
-type Particle = {
+type ParticleBase = {
   x: number
   y: number
   vx: number
@@ -19,8 +19,19 @@ type Particle = {
   gravity: number
   drag: number
   color: string
-  glyph: string
 }
+
+type Particle = ParticleBase &
+  (
+    | {
+        kind: "ray"
+        length: number
+      }
+    | {
+        kind: "glyph"
+        glyph: string
+      }
+  )
 
 type Shell = {
   x: number
@@ -98,16 +109,17 @@ export const AsciiFireworks = ({ onDone, className }: AsciiFireworksProps) => {
         const angle = (Math.PI * 2 * i) / count
         const speed = strength * (0.72 + (i % 5) * 0.13)
         particles.push({
+          kind: "ray",
           x,
           y,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
           life: 1,
           decay: 0.012,
-          gravity: 0.035,
+          gravity: 0,
           drag: 0.985,
           color,
-          glyph: GLYPHS[i % GLYPHS.length],
+          length: strength * (2.6 + (i % 3) * 0.45),
         })
       }
     }
@@ -199,6 +211,7 @@ export const AsciiFireworks = ({ onDone, className }: AsciiFireworksProps) => {
 
         if (now - shell.lastTrailAt >= TRAIL_INTERVAL_MS) {
           particles.push({
+            kind: "glyph",
             x: shell.x,
             y: shell.y + 8,
             vx: 0,
@@ -242,8 +255,20 @@ export const AsciiFireworks = ({ onDone, className }: AsciiFireworksProps) => {
           continue
         }
         ctx.globalAlpha = particle.life
-        ctx.fillStyle = particle.color
-        ctx.fillText(particle.glyph, particle.x, particle.y)
+        if (particle.kind === "ray") {
+          const speed = Math.hypot(particle.vx, particle.vy) || 1
+          const unitX = particle.vx / speed
+          const unitY = particle.vy / speed
+          ctx.beginPath()
+          ctx.moveTo(particle.x - unitX * particle.length, particle.y - unitY * particle.length)
+          ctx.lineTo(particle.x, particle.y)
+          ctx.strokeStyle = particle.color
+          ctx.lineWidth = 1.25
+          ctx.stroke()
+        } else {
+          ctx.fillStyle = particle.color
+          ctx.fillText(particle.glyph, particle.x, particle.y)
+        }
       }
       ctx.globalAlpha = 1
 

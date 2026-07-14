@@ -4,9 +4,11 @@ import { useState } from "react"
 import { CheckIcon } from "@/components/icons/check"
 import { ChevronRightIcon } from "@/components/icons/chevron-right"
 import { CopyIcon } from "@/components/icons/copy"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { useMountEffect } from "@/hooks/use-mount-effect"
 import { cn } from "@/lib/utils"
 import { AgentGlyphField } from "./agent-glyph-field"
+import { AGENT_REVEAL_CHANGE_EVENT } from "./agent-reveal-event"
 import { AiToolLogoCarousel } from "./ai-tool-logo-carousel"
 import { ScrollAccentAnchors } from "./scroll-accent"
 
@@ -22,6 +24,16 @@ const AGENT_SETUP_PROMPT =
 export const Hero = ({ className }: HeroProps) => {
   const [isCopied, setIsCopied] = useState(false)
   const [isAgentRevealActive, setIsAgentRevealActive] = useState(false)
+  const [isExternalAgentRevealActive, setIsExternalAgentRevealActive] = useState(false)
+
+  useMountEffect(() => {
+    const onAgentRevealChange = (event: Event) => {
+      setIsExternalAgentRevealActive((event as CustomEvent<boolean>).detail)
+    }
+    window.addEventListener(AGENT_REVEAL_CHANGE_EVENT, onAgentRevealChange)
+
+    return () => window.removeEventListener(AGENT_REVEAL_CHANGE_EVENT, onAgentRevealChange)
+  })
 
   const onAgentRevealStart = () => {
     setIsAgentRevealActive(true)
@@ -40,7 +52,7 @@ export const Hero = ({ className }: HeroProps) => {
   return (
     <section
       className={cn(
-        "relative flex flex-col items-stretch gap-6 border-b border-x border-border px-4 pt-8 sm:px-8 xl:flex-row xl:items-start xl:gap-10 xl:py-[18px] xl:pl-8 xl:pr-[18px]",
+        "relative flex flex-col items-stretch gap-6 border-b border-border px-4 pt-8 sm:border-x sm:px-8 xl:flex-row xl:items-start xl:gap-10 xl:py-[18px] xl:pl-8 xl:pr-[18px]",
         className,
       )}
     >
@@ -55,7 +67,7 @@ export const Hero = ({ className }: HeroProps) => {
         </p>
       </div>
       <AgentGlyphField
-        active={isAgentRevealActive}
+        active={isAgentRevealActive || isExternalAgentRevealActive}
         className="h-[220px] min-w-0 w-full grow xl:h-[260px] xl:basis-[448px]"
       />
       <div
@@ -65,10 +77,11 @@ export const Hero = ({ className }: HeroProps) => {
         )}
       >
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-          <a href="https://supabase.com/docs/guides/getting-started">
-            <Button className="h-11 sm:h-7" variant="brand">
-              Quickstart
-            </Button>
+          <a
+            href="https://supabase.com/docs/guides/getting-started"
+            className={buttonVariants({ variant: "brand", className: "h-11 sm:h-7" })}
+          >
+            Quickstart
           </a>
           <Button
             className="h-11 sm:h-7"

@@ -208,7 +208,7 @@ const PieceCell = ({
         )}
       >
         <div className="flex items-center gap-1.5 sm:gap-2">
-          <Icon />
+          <Icon className="text-foreground-subtle transition-colors duration-150 ease-out group-hover:text-accent" />
           <h3 className="text-xs font-medium leading-4 text-brand-foreground sm:text-[15px] sm:leading-[22.5px]">
             {piece.title}
           </h3>
@@ -256,7 +256,7 @@ const GridLines = ({ className }: GridLinesProps) => (
   <span aria-hidden className={cn("pointer-events-none absolute inset-0 z-10", className)}>
     <span className="absolute inset-y-0 left-[33.333333%] w-px bg-border" />
     <span className="absolute inset-y-0 left-[66.666667%] w-px bg-border" />
-    <span className="absolute inset-y-0 right-0 w-px bg-border" />
+    <span className="absolute inset-y-0 right-0 hidden w-px bg-border sm:block" />
     <span className="absolute inset-x-0 top-0 h-px bg-border" />
     <span className="absolute inset-x-0 top-[33.333333%] h-px bg-border" />
     <span className="absolute inset-x-0 top-[66.666667%] h-px bg-border" />
@@ -329,7 +329,7 @@ export const ProductsSection = ({ className }: ProductsSectionProps) => {
   return (
     <div className={cn("flex flex-col", className)}>
       <SectionLabel label="products" />
-      <section className="relative grid grid-cols-3 border-l border-border">
+      <section className="relative grid grid-cols-3 border-border sm:border-l">
         <ScrollAccentReset />
         {preview.map((pieceId, slot) => (
           <PieceCell

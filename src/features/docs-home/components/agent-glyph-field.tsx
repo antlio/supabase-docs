@@ -24,7 +24,7 @@ type DrawPhraseRowOptions = {
   phraseStartIndex: number
   idleColor: string
   phraseColor: string
-  progress: number
+  characterProgresses: number[]
   elapsed: number
   now: number
   reduceMotion: boolean
@@ -45,12 +45,13 @@ const MIN_ALPHA = 0.14
 const MAX_ALPHA = 0.48
 const GLYPH_EASING = 0.14
 const PHRASE_EASING = 0.16
+const PHRASE_EXIT_EASING = 0.26
 const MUTATION_INTERVAL_MS = 80
 const MIN_CHANGE_MS = 180
 const MAX_CHANGE_MS = 1400
 const CHARACTER_STAGGER_MS = 36
 const CHARACTER_GLITCH_MS = 110
-const CHARACTER_FADE_MS = 70
+const CHARACTER_EXIT_STAGGER_MS = 14
 const GLITCH_FRAME_MS = 45
 const GLITCH_SEED_OFFSET = 7
 const MIN_VISIBLE_PROGRESS = 0.01
@@ -61,13 +62,34 @@ const randomBetween = (minimum: number, maximum: number): number =>
 
 const randomGlyph = (): string => GLYPHS.at(Math.floor(Math.random() * GLYPHS.length)) ?? "0"
 
+const createCharacterExitDelays = (): number[] => {
+  const visibleCharacterIndices = Array.from({ length: PHRASE.length }, (_, index) => index).filter(
+    (index) => PHRASE.at(index) !== " ",
+  )
+
+  for (let index = visibleCharacterIndices.length - 1; index > 0; index--) {
+    const swapIndex = Math.floor(Math.random() * (index + 1))
+    const currentCharacterIndex = visibleCharacterIndices.at(index)
+    const nextCharacterIndex = visibleCharacterIndices.at(swapIndex)
+    if (currentCharacterIndex === undefined || nextCharacterIndex === undefined) continue
+    visibleCharacterIndices[index] = nextCharacterIndex
+    visibleCharacterIndices[swapIndex] = currentCharacterIndex
+  }
+
+  const delays = Array.from({ length: PHRASE.length }, () => 0)
+  visibleCharacterIndices.forEach((characterIndex, exitIndex) => {
+    delays[characterIndex] = exitIndex * CHARACTER_EXIT_STAGGER_MS
+  })
+  return delays
+}
+
 const drawPhraseRow = ({
   context,
   cells,
   phraseStartIndex,
   idleColor,
   phraseColor,
-  progress,
+  characterProgresses,
   elapsed,
   now,
   reduceMotion,
@@ -90,8 +112,7 @@ const drawPhraseRow = ({
     }
 
     const characterElapsed = elapsed - phraseIndex * CHARACTER_STAGGER_MS
-    const characterProgress = Math.min(1, Math.max(0, characterElapsed / CHARACTER_FADE_MS))
-    const replacementProgress = progress * characterProgress
+    const replacementProgress = characterProgresses.at(phraseIndex) ?? 0
 
     context.fillStyle = idleColor
     context.globalAlpha = cell.alpha * (1 - replacementProgress)
@@ -145,8 +166,12 @@ export const AgentGlyphField = ({ active = false, className }: AgentGlyphFieldPr
     let color = ""
     let phraseColor = ""
     let phraseStartIndex = 0
-    let phraseProgress = alwaysShowPhrase ? 1 : 0
+    const phraseCharacterProgresses: number[] = Array.from({ length: PHRASE.length }, () =>
+      alwaysShowPhrase ? 1 : 0,
+    )
+    let phraseExitDelays = createCharacterExitDelays()
     let phraseStartedAt = 0
+    let phraseExitStartedAt = 0
     let phraseElapsed = alwaysShowPhrase ? Number.POSITIVE_INFINITY : 0
     let wasActive = alwaysShowPhrase
     let lastMutation = 0
@@ -235,15 +260,28 @@ export const AgentGlyphField = ({ active = false, className }: AgentGlyphFieldPr
         phraseStartedAt = now
         phraseElapsed = 0
       }
+      if (!isActive && wasActive) {
+        phraseExitStartedAt = now
+        phraseExitDelays = createCharacterExitDelays()
+      }
       if (isActive) {
         phraseElapsed = alwaysShowPhrase ? Number.POSITIVE_INFINITY : now - phraseStartedAt
       }
       wasActive = isActive
 
-      const targetPhraseProgress = isActive ? 1 : 0
-      phraseProgress = reduceMotion
-        ? targetPhraseProgress
-        : phraseProgress + (targetPhraseProgress - phraseProgress) * PHRASE_EASING
+      for (let phraseIndex = 0; phraseIndex < PHRASE.length; phraseIndex++) {
+        const currentProgress = phraseCharacterProgresses.at(phraseIndex) ?? 0
+        const hasEntered =
+          currentProgress >= MIN_VISIBLE_PROGRESS ||
+          phraseElapsed >= phraseIndex * CHARACTER_STAGGER_MS
+        const hasExited = now - phraseExitStartedAt >= (phraseExitDelays.at(phraseIndex) ?? 0)
+        const targetProgress = isActive ? (hasEntered ? 1 : 0) : hasExited ? 0 : 1
+        const easing = isActive ? PHRASE_EASING : PHRASE_EXIT_EASING
+
+        phraseCharacterProgresses[phraseIndex] = reduceMotion
+          ? targetProgress
+          : currentProgress + (targetProgress - currentProgress) * easing
+      }
 
       if (!reduceMotion && now - lastMutation >= MUTATION_INTERVAL_MS) {
         mutateCells(now)
@@ -270,7 +308,7 @@ export const AgentGlyphField = ({ active = false, className }: AgentGlyphFieldPr
         phraseStartIndex,
         idleColor: color,
         phraseColor: phraseColor || color,
-        progress: phraseProgress,
+        characterProgresses: phraseCharacterProgresses,
         elapsed: phraseElapsed,
         now,
         reduceMotion,

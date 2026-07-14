@@ -81,21 +81,20 @@ const RESOURCE_COLUMNS: readonly (readonly Resource[])[] = [
 const ResourceItem = ({ resource }: { resource: Resource }) => (
   <a
     href={resource.href}
-    className={cn(
-      "group/item flex w-full flex-col items-start gap-1 px-4 sm:px-8",
-      "focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent",
-    )}
+    className={cn("group/item flex w-full flex-col items-start px-4 outline-none sm:px-8")}
   >
-    <span className="flex items-center gap-2">
-      <span className="flex size-[18px] shrink-0 items-center justify-center text-foreground-subtle transition-colors duration-150 ease-out group-hover/item:text-accent">
-        {resource.icon}
+    <span className="flex flex-col items-start gap-1 rounded-xs group-focus-visible/item:outline group-focus-visible/item:outline-2 group-focus-visible/item:outline-accent">
+      <span className="flex items-center gap-2">
+        <span className="flex size-[18px] shrink-0 items-center justify-center text-foreground-subtle transition-colors duration-150 ease-out group-hover/item:text-accent">
+          {resource.icon}
+        </span>
+        <span className="text-[15px] font-medium leading-[1.5] text-brand-foreground">
+          {resource.title}
+        </span>
       </span>
-      <span className="text-[15px] font-medium leading-[1.5] text-brand-foreground">
-        {resource.title}
+      <span className="max-w-[276px] text-sm leading-[1.6] text-foreground-mono">
+        {resource.description}
       </span>
-    </span>
-    <span className="max-w-[276px] text-sm leading-[1.6] text-foreground-mono">
-      {resource.description}
     </span>
   </a>
 )
@@ -108,8 +107,9 @@ export const ResourcesSection = ({ className }: ResourcesSectionProps) => (
         <div
           key={column[0].slug}
           className={cn(
-            "relative flex min-w-0 flex-col items-start gap-8 border-b border-t border-border py-8",
-            columnIndex !== 1 ? "border-x" : "sm:border-r lg:border-r-0",
+            "relative flex min-w-0 flex-col items-start gap-8 border-border py-8",
+            columnIndex === 1 && "sm:border-l",
+            columnIndex === 2 && "lg:border-l",
           )}
         >
           {columnIndex === 0 ? <ScrollAccentAnchors corners={["top-left"]} /> : null}

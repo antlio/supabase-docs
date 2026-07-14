@@ -54,15 +54,16 @@ export const SiteFooter = ({ className }: SiteFooterProps) => (
           <li
             key={cell.label}
             className={cn(
-              "flex min-w-0 items-center justify-center border-b border-border px-4 py-6 sm:border-b-0 sm:p-8",
-              index === 0 ? "sm:border-l" : "sm:border-l sm:border-r",
+              "flex min-w-0 items-stretch justify-center border-border sm:border-l",
+              index < STATUS_CELLS.length - 1 && "border-b sm:border-b-0",
+              index === STATUS_CELLS.length - 1 && "sm:border-r",
             )}
           >
             <a
               href={cell.href}
               className={cn(
-                "group flex items-center gap-2 rounded-xs outline-none",
-                "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
+                "group flex min-h-16 w-full items-center justify-center gap-2 rounded-xs px-4 py-6 outline-none sm:min-h-0 sm:p-8",
+                "focus-visible:outline-solid focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent",
               )}
             >
               <span className="flex size-[15px] shrink-0 items-center justify-center">
@@ -90,9 +91,9 @@ export const SiteFooter = ({ className }: SiteFooterProps) => (
             key={link.label}
             href={link.href}
             className={cn(
-              "rounded-xs text-xs font-medium leading-4 text-foreground-mono outline-none",
+              "rounded-xs px-1 py-0.5 text-xs font-medium leading-4 text-foreground-mono outline-none",
               "transition-colors duration-150 ease-out hover:text-foreground-soft",
-              "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
+              "focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-accent",
             )}
           >
             {link.label}

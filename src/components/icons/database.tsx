@@ -2,14 +2,37 @@ import { iconVariants, type IconProps } from "@/components/icons/icon-variants"
 
 export const DatabaseIcon = ({ size, className }: IconProps) => (
   <svg
-    viewBox="0 0 18 18"
-    className={iconVariants({ size: size ?? "lg", className })}
+    viewBox="0 0 15 15"
+    className={iconVariants({ size: size ?? "sm", className })}
     fill="none"
     aria-hidden
   >
     <path
-      d="M2.813 3.5C2.813 2.65 3.5 1.963 4.351 1.963H14.85C15.7 1.963 16.388 2.65 16.388 3.5V5.55C16.388 6.098 16.103 6.578 15.673 6.851V10.401C16.103 10.674 16.388 11.154 16.388 11.701V13.751C16.388 14.601 15.7 15.289 14.85 15.289H4.351C3.5 15.289 2.813 14.601 2.813 13.751V11.701C2.813 11.148 3.104 10.663 3.543 10.391V6.855C3.104 6.583 2.813 6.098 2.813 5.55V3.5ZM14.866 6.05H4.87C4.594 6.041 4.375 5.815 4.375 5.55V3.5C4.375 3.217 4.604 2.988 4.887 2.988H14.85C15.133 2.988 15.362 3.217 15.362 3.5V5.55C15.362 5.815 15.143 6.041 14.866 6.05ZM5.09 7.075V10.55H12.85V7.075H5.09ZM4.887 11.638C4.604 11.638 4.375 11.867 4.375 12.15V14.2C4.375 14.483 4.604 14.712 4.887 14.712H14.85C15.133 14.712 15.362 14.483 15.362 14.2V12.15C15.362 11.867 15.133 11.638 14.85 11.638H4.887Z"
-      fill="var(--color-brand)"
+      d="M11.111 2C11.111 3.105 8.624 4 5.556 4S0 3.105 0 2 2.487 0 5.556 0s5.555.895 5.555 2Z"
+      transform="translate(1.944 1.278)"
+      vectorEffect="non-scaling-stroke"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M0 0v8.444c0 1.105 2.487 2 5.556 2s5.555-.895 5.555-2V0"
+      transform="translate(1.944 3.278)"
+      vectorEffect="non-scaling-stroke"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M0 0c0 1.105 2.487 2 5.556 2s5.555-.895 5.555-2"
+      transform="translate(1.944 7.5)"
+      vectorEffect="non-scaling-stroke"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 )

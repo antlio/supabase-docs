@@ -2,14 +2,46 @@ import { iconVariants, type IconProps } from "@/components/icons/icon-variants"
 
 export const RealtimeIcon = ({ size, className }: IconProps) => (
   <svg
-    viewBox="0 0 18 18"
-    className={iconVariants({ size: size ?? "lg", className })}
+    viewBox="0 0 15 15"
+    className={iconVariants({ size: size ?? "sm", className })}
     fill="none"
     aria-hidden
   >
     <path
-      d="M6.541 0.740C6.851 0.740 7.103 0.992 7.103 1.302V4.108C7.103 4.418 6.851 4.670 6.541 4.670C6.231 4.670 5.979 4.418 5.979 4.108V1.302C5.979 0.992 6.231 0.740 6.541 0.740ZM1.653 1.233C1.876 1.017 2.232 1.022 2.448 1.245L4.846 3.716C5.062 3.939 5.057 4.295 4.834 4.511C4.611 4.728 4.255 4.722 4.038 4.499L1.641 2.029C1.425 1.806 1.430 1.450 1.653 1.233ZM5.698 6.829C5.287 5.890 6.244 4.936 7.182 5.349L16.103 9.272C17.085 9.703 16.963 11.134 15.922 11.393L12.503 12.244L11.670 15.470C11.403 16.505 9.979 16.619 9.550 15.639L5.698 6.829ZM15.650 10.301L6.729 6.379L10.581 15.189L11.498 11.638C11.549 11.439 11.706 11.283 11.907 11.233L15.650 10.301ZM1.130 6.048C1.130 5.738 1.382 5.486 1.693 5.486H4.442C4.753 5.486 5.004 5.738 5.004 6.048C5.004 6.359 4.753 6.611 4.442 6.611H1.693C1.382 6.611 1.130 6.359 1.130 6.048Z"
-      fill="var(--color-brand)"
+      d="M0 3.111V1.778A1.778 1.778 0 0 1 1.778 0h1.778"
+      transform="translate(1.944 1.944)"
+      vectorEffect="non-scaling-stroke"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M0 0h1.778a1.778 1.778 0 0 1 1.778 1.778v1.333"
+      transform="translate(9.5 1.945)"
+      vectorEffect="non-scaling-stroke"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M3.556 3.111H1.778A1.778 1.778 0 0 1 0 1.333V0"
+      transform="translate(1.945 9.945)"
+      vectorEffect="non-scaling-stroke"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="m.386.018 6.092 2.226a.287.287 0 0 1-.01.543l-2.789.892-.892 2.789a.287.287 0 0 1-.543.01L.018.386A.287.287 0 0 1 .386.018Z"
+      transform="translate(7.278 7.278)"
+      vectorEffect="non-scaling-stroke"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 )
