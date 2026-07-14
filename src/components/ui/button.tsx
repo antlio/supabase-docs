@@ -4,16 +4,16 @@ import { Button as BaseButton } from "@base-ui-components/react/button"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
-const RAISED_SHADOW = "shadow-[var(--shadow-raised)]"
+const RAISED_SHADOW = "shadow-raised"
 
 const OUTLINE_SHADOW = "[filter:drop-shadow(var(--shadow-outline))]"
 
 export const buttonVariants = cva(
   cn(
     "inline-flex items-center rounded-xs text-[13px] font-medium leading-[1.1] select-none",
-    "transition-[background-color,box-shadow,transform] duration-150 ease-out",
+    "transition-[background-color,box-shadow,transform] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] active:duration-[220ms]",
     "focus:outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent",
-    "active:scale-[0.98]",
+    "active:scale-[0.96] motion-reduce:active:scale-100",
     "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
     "[&>svg]:size-3.5 [&>svg]:shrink-0",
   ),
@@ -38,6 +38,7 @@ export const buttonVariants = cva(
       },
       size: {
         default: "h-7 gap-1.5 px-2",
+        touch: "h-11 gap-1.5 px-3 sm:h-7 sm:px-2",
         icon: "size-7 justify-center",
       },
     },

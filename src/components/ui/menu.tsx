@@ -32,7 +32,7 @@ export const MenuPopup = ({ className, ref, ...props }: MenuPopupProps) => (
     ref={ref}
     className={cn(
       "max-h-[var(--available-height)] min-w-40 origin-[var(--transform-origin)] overflow-y-auto rounded-xs border border-border bg-surface p-1",
-      "text-[13px] text-foreground-soft shadow-[var(--shadow-popover)]",
+      "text-[13px] text-foreground-soft shadow-popover",
       "transition-opacity duration-150 ease-out",
       "data-[starting-style]:opacity-0",
       "data-[ending-style]:duration-75 data-[ending-style]:opacity-0",
