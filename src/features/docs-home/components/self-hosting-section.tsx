@@ -14,7 +14,7 @@ type SelfHostingService = {
   icon: React.ReactNode
 }
 
-export type SelfHostingSectionProps = {
+type SelfHostingSectionProps = {
   className?: string
 }
 

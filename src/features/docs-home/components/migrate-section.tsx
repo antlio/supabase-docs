@@ -12,10 +12,11 @@ import { NeonIcon } from "@/components/icons/neon"
 import { PostgresIcon } from "@/components/icons/postgres"
 import { RenderIcon } from "@/components/icons/render"
 import { VercelPostgresIcon } from "@/components/icons/vercel-postgres"
-import { SlashSpacer } from "@/components/common/slash-rule"
+import { SlashRule } from "@/components/common/slash-rule"
 import { cn } from "@/lib/utils"
 import { LinkTile } from "./link-tile"
 import { MigrateCubesArt } from "./migrate-cubes-art"
+import { TileColumnsGrid } from "./tile-columns-grid"
 
 type MigrateGuide = {
   slug: string
@@ -23,7 +24,7 @@ type MigrateGuide = {
   icon: (props: { className?: string }) => React.ReactElement
 }
 
-export type MigrateSectionProps = {
+type MigrateSectionProps = {
   className?: string
 }
 
@@ -52,12 +53,39 @@ const MIGRATE_COLUMNS: readonly (readonly MigrateGuide[])[] = [
 
 const MIGRATE_GUIDES = MIGRATE_COLUMNS.flat()
 
+const MigrateGuideTile = ({
+  guide,
+  onActiveChange,
+}: {
+  guide: MigrateGuide
+  onActiveChange: (slug: string | null) => void
+}) => {
+  const Icon = guide.icon
+  const activate = () => onActiveChange(guide.slug)
+  const deactivate = () => onActiveChange(null)
+
+  return (
+    <LinkTile
+      href={`${MIGRATE_ROOT}/${guide.slug}`}
+      label={guide.label}
+      icon={<Icon />}
+      onPointerEnter={activate}
+      onPointerLeave={deactivate}
+      onFocus={activate}
+      onBlur={deactivate}
+    />
+  )
+}
+
 export const MigrateSection = ({ className }: MigrateSectionProps) => {
   const [activeGuideSlug, setActiveGuideSlug] = useState<string | null>(null)
+  const renderGuide = (guide: MigrateGuide) => (
+    <MigrateGuideTile key={guide.slug} guide={guide} onActiveChange={setActiveGuideSlug} />
+  )
 
   return (
     <div className={cn("flex flex-col", className)}>
-      <SlashSpacer />
+      <SlashRule className="pb-6 pt-16" />
       <section className="relative flex flex-col">
         <div className="flex flex-col items-center justify-center md:flex-row">
           <div className="flex w-full flex-1 basis-auto items-center justify-center self-stretch bg-background p-6 sm:p-8 md:basis-[476px]">
@@ -71,7 +99,7 @@ export const MigrateSection = ({ className }: MigrateSectionProps) => {
               Bring your existing data, auth and storage to Supabase following our migration guides.
             </p>
             <a
-              href={`${MIGRATE_ROOT}`}
+              href={MIGRATE_ROOT}
               className={cn(
                 "group/link flex items-center gap-1 text-[13px] font-medium leading-[1.5] text-foreground",
                 "transition-colors duration-150 ease-out hover:text-accent",
@@ -83,31 +111,7 @@ export const MigrateSection = ({ className }: MigrateSectionProps) => {
             </a>
           </div>
         </div>
-        <div className="grid grid-cols-1 items-start bg-well sm:grid-cols-2 lg:grid-cols-3">
-          {MIGRATE_COLUMNS.map((column) => (
-            <div
-              key={column[0].slug}
-              className="flex min-w-0 flex-col items-start gap-4 py-6 sm:py-8"
-            >
-              {column.map((guide) => {
-                const Icon = guide.icon
-
-                return (
-                  <LinkTile
-                    key={guide.slug}
-                    href={`${MIGRATE_ROOT}/${guide.slug}`}
-                    label={guide.label}
-                    icon={<Icon />}
-                    onPointerEnter={() => setActiveGuideSlug(guide.slug)}
-                    onPointerLeave={() => setActiveGuideSlug(null)}
-                    onFocus={() => setActiveGuideSlug(guide.slug)}
-                    onBlur={() => setActiveGuideSlug(null)}
-                  />
-                )
-              })}
-            </div>
-          ))}
-        </div>
+        <TileColumnsGrid columns={MIGRATE_COLUMNS} renderTile={renderGuide} />
       </section>
     </div>
   )

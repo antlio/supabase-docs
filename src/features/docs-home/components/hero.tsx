@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { CheckIcon } from "@/components/icons/check"
+import { CopyStateIcon } from "@/components/common/copy-state-icon"
 import { ChevronRightIcon } from "@/components/icons/chevron-right"
-import { CopyIcon } from "@/components/icons/copy"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
+import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
 import { useMountEffect } from "@/hooks/use-mount-effect"
 import { cn } from "@/lib/utils"
 import { AgentGlyphField } from "./agent-glyph-field"
@@ -16,13 +16,11 @@ type HeroProps = {
   className?: string
 }
 
-const COPY_FEEDBACK_MS = 2000
-
 const AGENT_SETUP_PROMPT =
   "You are helping me build an app with Supabase. Set up the Supabase client, configure environment variables for the project URL and anon key, and scaffold auth, database, and storage helpers following the official Supabase docs at https://supabase.com/docs. Ask me for my project reference and API keys if you don't have them."
 
 export const Hero = ({ className }: HeroProps) => {
-  const [isCopied, setIsCopied] = useState(false)
+  const { copied, copy } = useCopyToClipboard()
   const [isAgentRevealActive, setIsAgentRevealActive] = useState(false)
   const [isExternalAgentRevealActive, setIsExternalAgentRevealActive] = useState(false)
 
@@ -44,9 +42,7 @@ export const Hero = ({ className }: HeroProps) => {
   }
 
   const onCopyPrompt = async () => {
-    await navigator.clipboard.writeText(AGENT_SETUP_PROMPT)
-    setIsCopied(true)
-    window.setTimeout(() => setIsCopied(false), COPY_FEEDBACK_MS)
+    await copy(AGENT_SETUP_PROMPT)
   }
 
   return (
@@ -77,24 +73,25 @@ export const Hero = ({ className }: HeroProps) => {
         )}
       >
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-          <a
-            href="https://supabase.com/docs/guides/getting-started"
-            className={buttonVariants({ variant: "brand", className: "h-11 sm:h-7" })}
+          <Button
+            size="touch"
+            render={<a href="https://supabase.com/docs/guides/getting-started" />}
           >
             Quickstart
-          </a>
+          </Button>
           <Button
-            className="h-11 sm:h-7"
+            size="touch"
             variant="outline"
             onClick={onCopyPrompt}
             onPointerEnter={onAgentRevealStart}
             onPointerLeave={onAgentRevealEnd}
           >
-            {isCopied ? <CheckIcon /> : <CopyIcon />}
+            <CopyStateIcon copied={copied} />
             Copy Prompt Setup
           </Button>
           <Button
-            className="ai-tool-carousel-trigger h-11 sm:h-7"
+            size="touch"
+            className="ai-tool-carousel-trigger"
             render={<a href="https://supabase.com/docs/guides/ai-tools" />}
             variant="outline"
             onPointerEnter={onAgentRevealStart}
@@ -102,7 +99,7 @@ export const Hero = ({ className }: HeroProps) => {
           >
             <AiToolLogoCarousel />
             All AI Tools
-            <ChevronRightIcon className="!size-[15px] text-foreground-muted" />
+            <ChevronRightIcon className="text-foreground-muted" />
           </Button>
         </div>
       </div>

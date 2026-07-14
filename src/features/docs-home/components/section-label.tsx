@@ -1,6 +1,11 @@
 import { SLASH_RULE } from "@/components/common/slash-rule"
 import { cn } from "@/lib/utils"
 
+type SectionLabelProps = {
+  label: string
+  className?: string
+}
+
 export const SectionLabel = ({ label, className }: SectionLabelProps) => (
   <h2
     className={cn(
@@ -15,8 +20,3 @@ export const SectionLabel = ({ label, className }: SectionLabelProps) => (
     </span>
   </h2>
 )
-
-export type SectionLabelProps = {
-  label: string
-  className?: string
-}

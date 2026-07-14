@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef } from "react"
+import { AGENT_PHRASE, getAgentPhraseLayout } from "../agent-glyph-layout"
 import { useMountEffect } from "@/hooks/use-mount-effect"
 import { cn } from "@/lib/utils"
 
@@ -13,24 +14,25 @@ type GlyphCell = {
   nextChangeAt: number
 }
 
+type PhraseGlyphCell = GlyphCell & {
+  phraseIndex: number | null
+}
+
 type AgentGlyphFieldProps = {
   active?: boolean
   className?: string
 }
 
-type DrawPhraseRowOptions = {
+type DrawPhraseCellsOptions = {
   context: CanvasRenderingContext2D
-  cells: GlyphCell[]
-  phraseStartIndex: number
+  cells: PhraseGlyphCell[]
   idleColor: string
   phraseColor: string
   characterProgresses: number[]
-  elapsed: number
   now: number
   reduceMotion: boolean
 }
 
-const PHRASE = "or let your agent do"
 const GLYPHS =
   "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%&*+-_=/?!<>[]{}:;~"
 
@@ -50,11 +52,12 @@ const MUTATION_INTERVAL_MS = 80
 const MIN_CHANGE_MS = 180
 const MAX_CHANGE_MS = 1400
 const CHARACTER_STAGGER_MS = 36
-const CHARACTER_GLITCH_MS = 110
 const CHARACTER_EXIT_STAGGER_MS = 14
 const GLITCH_FRAME_MS = 45
 const GLITCH_SEED_OFFSET = 7
 const MIN_VISIBLE_PROGRESS = 0.01
+const IDLE_GLYPH_PROGRESS = 0.14
+const SETTLED_PHRASE_PROGRESS = 0.65
 const EDGE_COLUMN_COUNT = 1
 
 const randomBetween = (minimum: number, maximum: number): number =>
@@ -63,9 +66,10 @@ const randomBetween = (minimum: number, maximum: number): number =>
 const randomGlyph = (): string => GLYPHS.at(Math.floor(Math.random() * GLYPHS.length)) ?? "0"
 
 const createCharacterExitDelays = (): number[] => {
-  const visibleCharacterIndices = Array.from({ length: PHRASE.length }, (_, index) => index).filter(
-    (index) => PHRASE.at(index) !== " ",
-  )
+  const visibleCharacterIndices = Array.from(
+    { length: AGENT_PHRASE.length },
+    (_, index) => index,
+  ).filter((index) => AGENT_PHRASE.at(index) !== " ")
 
   for (let index = visibleCharacterIndices.length - 1; index > 0; index--) {
     const swapIndex = Math.floor(Math.random() * (index + 1))
@@ -76,24 +80,22 @@ const createCharacterExitDelays = (): number[] => {
     visibleCharacterIndices[swapIndex] = currentCharacterIndex
   }
 
-  const delays = Array.from({ length: PHRASE.length }, () => 0)
+  const delays = Array.from({ length: AGENT_PHRASE.length }, () => 0)
   visibleCharacterIndices.forEach((characterIndex, exitIndex) => {
     delays[characterIndex] = exitIndex * CHARACTER_EXIT_STAGGER_MS
   })
   return delays
 }
 
-const drawPhraseRow = ({
+const drawPhraseCells = ({
   context,
   cells,
-  phraseStartIndex,
   idleColor,
   phraseColor,
   characterProgresses,
-  elapsed,
   now,
   reduceMotion,
-}: DrawPhraseRowOptions) => {
+}: DrawPhraseCellsOptions) => {
   for (let cellIndex = 0; cellIndex < cells.length; cellIndex++) {
     const cell = cells.at(cellIndex)
     if (!cell) continue
@@ -101,26 +103,29 @@ const drawPhraseRow = ({
       cell.alpha += (cell.targetAlpha - cell.alpha) * GLYPH_EASING
     }
 
-    const phraseIndex = cellIndex - phraseStartIndex
-    const character =
-      phraseIndex >= 0 && phraseIndex < PHRASE.length ? PHRASE.at(phraseIndex) : undefined
-    if (character === undefined) {
+    const phraseIndex = cell.phraseIndex
+    if (phraseIndex === null) {
       context.fillStyle = idleColor
       context.globalAlpha = cell.alpha
       context.fillText(cell.glyph, cell.x, cell.y)
       continue
     }
 
-    const characterElapsed = elapsed - phraseIndex * CHARACTER_STAGGER_MS
+    const character = AGENT_PHRASE.at(phraseIndex)
+    if (character === undefined) continue
+
     const replacementProgress = characterProgresses.at(phraseIndex) ?? 0
 
-    context.fillStyle = idleColor
-    context.globalAlpha = cell.alpha * (1 - replacementProgress)
-    context.fillText(cell.glyph, cell.x, cell.y)
+    if (replacementProgress <= IDLE_GLYPH_PROGRESS) {
+      context.fillStyle = idleColor
+      context.globalAlpha = cell.alpha
+      context.fillText(cell.glyph, cell.x, cell.y)
+      continue
+    }
 
-    if (character === " " || replacementProgress < MIN_VISIBLE_PROGRESS) continue
+    if (character === " ") continue
 
-    const isSettled = reduceMotion || characterElapsed >= CHARACTER_GLITCH_MS
+    const isSettled = reduceMotion || replacementProgress >= SETTLED_PHRASE_PROGRESS
     const glyph = isSettled
       ? character
       : (GLYPHS.at(
@@ -128,7 +133,7 @@ const drawPhraseRow = ({
         ) ?? character)
 
     context.fillStyle = phraseColor
-    context.globalAlpha = replacementProgress
+    context.globalAlpha = 1
     context.fillText(glyph, cell.x, cell.y)
   }
 }
@@ -158,15 +163,14 @@ export const AgentGlyphField = ({ active = false, className }: AgentGlyphFieldPr
     hoveredRef.current = alwaysShowPhrase
 
     let cells: GlyphCell[] = []
-    let phraseCells: GlyphCell[] = []
+    let phraseCells: PhraseGlyphCell[] = []
     let width = 0
     let height = 0
     let fontSize = 16
     let fontFamily = "ui-monospace, monospace"
     let color = ""
     let phraseColor = ""
-    let phraseStartIndex = 0
-    const phraseCharacterProgresses: number[] = Array.from({ length: PHRASE.length }, () =>
+    const phraseCharacterProgresses: number[] = Array.from({ length: AGENT_PHRASE.length }, () =>
       alwaysShowPhrase ? 1 : 0,
     )
     let phraseExitDelays = createCharacterExitDelays()
@@ -207,16 +211,37 @@ export const AgentGlyphField = ({ active = false, className }: AgentGlyphFieldPr
       cells = nextCells
 
       const phraseY = height - fontSize * PHRASE_BASELINE_OFFSET
-      phraseStartIndex = Math.floor((columns - PHRASE.length) / 2)
-      phraseCells = Array.from({ length: columns }, (_, index) => {
+      const phraseLayout = getAgentPhraseLayout(columns)
+      const phraseRowStep =
+        phraseLayout.rowCount === 1
+          ? verticalStep
+          : Math.min(
+              verticalStep,
+              Math.max(fontSize, (phraseY - padding) / (phraseLayout.rowCount - 1)),
+            )
+      const placementByCell = new Map(
+        phraseLayout.placements.map((placement) => [
+          `${placement.row}:${placement.column}`,
+          placement.phraseIndex,
+        ]),
+      )
+      const phraseCellPositions = phraseLayout.fillRows
+        ? Array.from({ length: phraseLayout.rowCount * columns }, (_, index) => ({
+            column: index % columns,
+            row: Math.floor(index / columns),
+          }))
+        : phraseLayout.placements.map(({ column, row }) => ({ column, row }))
+
+      phraseCells = phraseCellPositions.map(({ column, row }) => {
         const alpha = randomBetween(MIN_ALPHA, MAX_ALPHA)
         return {
-          x: padding + horizontalStep * (index + 0.5),
-          y: phraseY,
+          x: padding + horizontalStep * (column + 0.5),
+          y: phraseY - (phraseLayout.rowCount - row - 1) * phraseRowStep,
           glyph: randomGlyph(),
           alpha,
           targetAlpha: alpha,
           nextChangeAt: now + randomBetween(MIN_CHANGE_MS, MAX_CHANGE_MS),
+          phraseIndex: placementByCell.get(`${row}:${column}`) ?? null,
         }
       })
     }
@@ -251,7 +276,14 @@ export const AgentGlyphField = ({ active = false, className }: AgentGlyphFieldPr
       }
     }
 
+    let isVisible = false
+
     const frame = (now: number) => {
+      if (!isVisible) {
+        animationFrame = 0
+        return
+      }
+
       animationFrame = requestAnimationFrame(frame)
       if (document.hidden) return
 
@@ -269,7 +301,7 @@ export const AgentGlyphField = ({ active = false, className }: AgentGlyphFieldPr
       }
       wasActive = isActive
 
-      for (let phraseIndex = 0; phraseIndex < PHRASE.length; phraseIndex++) {
+      for (let phraseIndex = 0; phraseIndex < AGENT_PHRASE.length; phraseIndex++) {
         const currentProgress = phraseCharacterProgresses.at(phraseIndex) ?? 0
         const hasEntered =
           currentProgress >= MIN_VISIBLE_PROGRESS ||
@@ -302,14 +334,12 @@ export const AgentGlyphField = ({ active = false, className }: AgentGlyphFieldPr
         context.fillText(cell.glyph, cell.x, cell.y)
       }
 
-      drawPhraseRow({
+      drawPhraseCells({
         context,
         cells: phraseCells,
-        phraseStartIndex,
         idleColor: color,
         phraseColor: phraseColor || color,
         characterProgresses: phraseCharacterProgresses,
-        elapsed: phraseElapsed,
         now,
         reduceMotion,
       })
@@ -323,13 +353,25 @@ export const AgentGlyphField = ({ active = false, className }: AgentGlyphFieldPr
       attributes: true,
       attributeFilter: ["data-theme"],
     })
+    const visibilityObserver = new IntersectionObserver(([entry]) => {
+      isVisible = entry?.isIntersecting ?? false
+
+      if (isVisible && animationFrame === 0) {
+        lastMutation = performance.now()
+        animationFrame = requestAnimationFrame(frame)
+      } else if (!isVisible && animationFrame !== 0) {
+        cancelAnimationFrame(animationFrame)
+        animationFrame = 0
+      }
+    })
+    visibilityObserver.observe(root)
     resize()
-    animationFrame = requestAnimationFrame(frame)
 
     return () => {
       cancelAnimationFrame(animationFrame)
       resizeObserver.disconnect()
       themeObserver.disconnect()
+      visibilityObserver.disconnect()
     }
   })
 

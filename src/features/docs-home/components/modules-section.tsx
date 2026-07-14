@@ -1,4 +1,4 @@
-import { SlashSpacer } from "@/components/common/slash-rule"
+import { SlashRule } from "@/components/common/slash-rule"
 import { AiVectorsIcon } from "@/components/icons/ai-vectors"
 import { CronIcon } from "@/components/icons/cron"
 import { DataRestIcon } from "@/components/icons/data-rest"
@@ -28,7 +28,7 @@ const MODULES: readonly Module[] = [
 
 export const ModulesSection = ({ className }: ModulesSectionProps) => (
   <div className={cn("flex flex-col", className)}>
-    <SlashSpacer />
+    <SlashRule className="pb-6 pt-16" />
     <section className="relative flex flex-col md:flex-row">
       <ScrollAccentAnchors corners={["top-left"]} />
       <div className="flex w-full shrink-0 items-center justify-center border border-border px-4 py-8 md:w-[54%] xl:w-[512px]">

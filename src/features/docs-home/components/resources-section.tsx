@@ -16,7 +16,7 @@ type Resource = {
   icon: React.ReactNode
 }
 
-export type ResourcesSectionProps = {
+type ResourcesSectionProps = {
   className?: string
 }
 
@@ -102,16 +102,9 @@ const ResourceItem = ({ resource }: { resource: Resource }) => (
 export const ResourcesSection = ({ className }: ResourcesSectionProps) => (
   <section className={cn("relative flex flex-col", className)}>
     <SectionLabel label="additional resources" />
-    <div className="grid grid-cols-1 items-start sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 items-start border-x border-b border-border sm:grid-cols-2 lg:grid-cols-3">
       {RESOURCE_COLUMNS.map((column, columnIndex) => (
-        <div
-          key={column[0].slug}
-          className={cn(
-            "relative flex min-w-0 flex-col items-start gap-8 border-border py-8",
-            columnIndex === 1 && "sm:border-l",
-            columnIndex === 2 && "lg:border-l",
-          )}
-        >
+        <div key={column[0].slug} className="relative flex min-w-0 flex-col items-start gap-8 py-8">
           {columnIndex === 0 ? <ScrollAccentAnchors corners={["top-left"]} /> : null}
           {column.map((resource) => (
             <ResourceItem key={resource.slug} resource={resource} />

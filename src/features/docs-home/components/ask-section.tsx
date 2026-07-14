@@ -161,8 +161,6 @@ const SuggestionButton = ({ suggestion, onSelect }: SuggestionButtonProps) => {
 
 const AgentAnswer = ({ answer, isVisible, className }: AgentAnswerProps) => (
   <p
-    role={isVisible ? "status" : undefined}
-    aria-live={isVisible ? "polite" : "off"}
     aria-hidden={!isVisible}
     data-open={isVisible}
     className={cn(
@@ -180,7 +178,7 @@ const UserPrompt = ({ prompt, isVisible, className }: UserPromptProps) => (
     data-open={isVisible}
     className={cn("t-panel-slide flex justify-end", className)}
   >
-    <p className="max-w-[82%] rounded-sm bg-surface-raised px-3 py-2 text-pretty text-sm leading-[1.6] text-foreground shadow-[var(--shadow-raised)]">
+    <p className="max-w-[82%] rounded-sm bg-surface-raised px-3 py-2 text-pretty text-sm leading-[1.6] text-foreground shadow-raised">
       {prompt}
     </p>
   </div>
@@ -188,8 +186,6 @@ const UserPrompt = ({ prompt, isVisible, className }: UserPromptProps) => (
 
 const AgentLoading = ({ isVisible, className }: AgentLoadingProps) => (
   <div
-    role={isVisible ? "status" : undefined}
-    aria-live={isVisible ? "polite" : "off"}
     aria-hidden={!isVisible}
     data-open={isVisible}
     className={cn("t-panel-slide flex items-center gap-2 px-2 py-1 text-accent", className)}
@@ -272,6 +268,13 @@ export const AskSection = ({ className }: AskSectionProps) => {
   const isConversationBusy = conversationTurns.some((turn) => turn.phase !== "answered")
   const isFirstTurnSettling =
     conversationTurns.length === 1 && conversationTurns[0]?.phase === "settling"
+  const latestTurn = conversationTurns.at(-1)
+  const liveAnnouncement =
+    latestTurn?.phase === "loading"
+      ? "Supabase is preparing an answer"
+      : latestTurn?.phase === "answered"
+        ? latestTurn.answer
+        : ""
 
   const scheduleSequenceStep = (callback: () => void, delay: number) => {
     const timer = window.setTimeout(() => {
@@ -390,6 +393,9 @@ export const AskSection = ({ className }: AskSectionProps) => {
             sentinelPositions={ASK_ACCENT_SENTINEL_POSITIONS}
           />
           <div className="mx-auto flex w-full max-w-[447px] flex-col gap-8 [--panel-blur:2px] [--panel-close-dur:160ms] [--panel-open-dur:240ms] [--panel-translate-y:10px]">
+            <span role="status" aria-live="polite" className="sr-only">
+              {liveAnnouncement}
+            </span>
             <div className="flex h-[90px] items-center justify-center">
               <SupabaseLineMark />
             </div>
@@ -452,7 +458,7 @@ export const AskSection = ({ className }: AskSectionProps) => {
                 aria-label="Ask Supabase"
                 autoComplete="off"
                 spellCheck={false}
-                className="caret-transparent border-y border-border pl-0 pr-14 text-base focus-visible:border-border"
+                className="caret-transparent border-y border-border pl-0 pr-14 text-base placeholder-shown:pl-3 focus-visible:border-border"
               />
               <button
                 type="submit"
@@ -460,7 +466,7 @@ export const AskSection = ({ className }: AskSectionProps) => {
                 disabled={isSubmitDisabled}
                 className={cn(
                   "absolute right-2 flex size-10 items-center justify-center rounded-xs bg-surface-raised text-foreground sm:right-3 sm:size-7",
-                  "shadow-[var(--shadow-raised)]",
+                  "shadow-raised",
                   "transition-[background-color,transform] duration-150 ease-out",
                   "enabled:hover:bg-surface enabled:active:scale-[0.96]",
                   "disabled:cursor-not-allowed disabled:opacity-40",

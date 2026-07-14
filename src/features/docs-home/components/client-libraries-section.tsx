@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs"
 import { join } from "node:path"
 import { ClientLibrariesInteractive } from "./client-libraries-interactive"
 
-export type ClientLibrariesSectionProps = {
+type ClientLibrariesSectionProps = {
   className?: string
 }
 

@@ -1,6 +1,11 @@
 import { cn } from "@/lib/utils"
 
-const TILE_SHADOW = "shadow-[var(--shadow-raised)]"
+type LinkTileProps = Omit<React.ComponentProps<"a">, "children" | "href"> & {
+  icon: React.ReactNode
+  label: string
+  href: string
+  active?: boolean
+}
 
 export const LinkTile = ({
   icon,
@@ -23,7 +28,7 @@ export const LinkTile = ({
         className={cn(
           "flex size-10 shrink-0 items-center justify-center overflow-clip rounded-xs",
           "border border-border bg-background",
-          TILE_SHADOW,
+          "shadow-raised",
           "transition-colors duration-150 ease-out group-hover/focus:bg-surface-raised/50",
           active && "bg-surface-raised/50",
         )}
@@ -36,10 +41,3 @@ export const LinkTile = ({
     </span>
   </a>
 )
-
-export type LinkTileProps = Omit<React.ComponentProps<"a">, "children" | "href"> & {
-  icon: React.ReactNode
-  label: string
-  href: string
-  active?: boolean
-}

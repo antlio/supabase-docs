@@ -222,6 +222,7 @@ const PieceCell = ({
 
   return (
     <div
+      aria-hidden
       draggable
       onDragStart={onCellDragStart}
       onDragEnd={onDragEnd}

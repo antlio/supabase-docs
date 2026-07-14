@@ -7,7 +7,7 @@ type SiteFooterProps = {
 }
 
 const OperationalDot = () => (
-  <span className="size-2 rounded-xs border-[0.5px] border-black/25 bg-accent" />
+  <span className="size-2 rounded-xs border-[0.5px] border-border bg-accent" />
 )
 
 const STATUS_CELLS = [
@@ -85,7 +85,10 @@ export const SiteFooter = ({ className }: SiteFooterProps) => (
     </div>
     <div className="flex flex-col items-center justify-between gap-4 border-t border-border px-4 py-5 sm:px-8 lg:flex-row lg:gap-6 lg:py-4">
       <span className="text-xs font-medium leading-4 text-foreground-mono">© Supabase Inc</span>
-      <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 lg:justify-end">
+      <nav
+        aria-label="Legal"
+        className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 lg:justify-end"
+      >
         {LEGAL_LINKS.map((link) => (
           <a
             key={link.label}

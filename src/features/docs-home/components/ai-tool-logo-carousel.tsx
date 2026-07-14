@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, type CSSProperties } from "react"
+import { useState } from "react"
 import { SupabaseAiGlyph } from "@/components/icons/supabase-ai-glyph"
 import { useMountEffect } from "@/hooks/use-mount-effect"
 import { cn } from "@/lib/utils"
+import type { CSSVars } from "@/types/css-vars"
 
 type MarkPath = {
   d: string
@@ -95,9 +96,9 @@ const LOGO_SLOT_SIZE = 16
 
 export const AiToolLogoCarousel = ({ className }: AiToolLogoCarouselProps) => {
   const [logoIndex, setLogoIndex] = useState(0)
-  const trackStyle = {
+  const trackStyle: CSSVars = {
     "--ai-tool-logo-offset": `${logoIndex * -LOGO_SLOT_SIZE}px`,
-  } as CSSProperties
+  }
 
   useMountEffect(() => {
     setLogoIndex(Math.floor(Math.random() * LOGO_COUNT))

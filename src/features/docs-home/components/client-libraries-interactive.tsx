@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react"
-import { SlashSpacer } from "@/components/common/slash-rule"
+import { SlashRule } from "@/components/common/slash-rule"
 import { CSharpIcon } from "@/components/icons/csharp"
 import { FlutterIcon } from "@/components/icons/flutter"
 import { JavaScriptIcon } from "@/components/icons/javascript"
@@ -10,6 +10,7 @@ import { PythonIcon } from "@/components/icons/python"
 import { SwiftIcon } from "@/components/icons/swift"
 import { cn } from "@/lib/utils"
 import { LinkTile } from "./link-tile"
+import { TileColumnsGrid } from "./tile-columns-grid"
 
 type ClientLibrarySlug = "javascript" | "csharp" | "flutter" | "swift" | "python" | "kotlin"
 
@@ -86,6 +87,42 @@ const getLibraryFromBoardTarget = (target: EventTarget | null) => {
   return CLIENT_LIBRARIES.find((library) => library.slug === slug) ?? null
 }
 
+type ClientLibraryTileProps = {
+  library: ClientLibrary
+  active: boolean
+  onPointerEnter: (slug: ClientLibrarySlug) => void
+  onPointerLeave: (slug: ClientLibrarySlug) => void
+  onFocus: (slug: ClientLibrarySlug) => void
+  onBlur: (slug: ClientLibrarySlug) => void
+}
+
+const ClientLibraryTile = ({
+  library,
+  active,
+  onPointerEnter,
+  onPointerLeave,
+  onFocus,
+  onBlur,
+}: ClientLibraryTileProps) => {
+  const handlePointerEnter = () => onPointerEnter(library.slug)
+  const handlePointerLeave = () => onPointerLeave(library.slug)
+  const handleFocus = () => onFocus(library.slug)
+  const handleBlur = () => onBlur(library.slug)
+
+  return (
+    <LinkTile
+      href={library.href}
+      label={library.label}
+      icon={library.icon}
+      active={active}
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+    />
+  )
+}
+
 export const ClientLibrariesInteractive = ({
   boardMarkup,
   className,
@@ -142,9 +179,21 @@ export const ClientLibrariesInteractive = ({
     syncBoardLibrary()
   }
 
+  const renderLibrary = (library: ClientLibrary) => (
+    <ClientLibraryTile
+      key={library.slug}
+      library={library}
+      active={activeLibrary === library.slug}
+      onPointerEnter={onLibraryPointerEnter}
+      onPointerLeave={onLibraryPointerLeave}
+      onFocus={onLibraryFocus}
+      onBlur={onLibraryBlur}
+    />
+  )
+
   return (
     <section className={cn("relative flex flex-col", className)}>
-      <SlashSpacer />
+      <SlashRule className="pb-6 pt-16" />
       <div className="flex flex-col items-start justify-center md:flex-row">
         <div className="flex w-full flex-1 basis-auto flex-col items-start justify-center gap-3 px-4 py-10 sm:px-8 sm:py-16 md:basis-[476px]">
           <h2 className="max-w-[450px] text-2xl font-medium leading-[1.25] text-foreground">
@@ -166,28 +215,11 @@ export const ClientLibrariesInteractive = ({
           />
         </div>
       </div>
-      <div className="grid grid-cols-1 items-start bg-well sm:grid-cols-2 lg:grid-cols-3">
-        {LIBRARY_COLUMNS.map((column) => (
-          <div
-            key={column[0].slug}
-            className="flex min-w-0 flex-col items-start gap-4 py-6 text-foreground-subtle sm:py-8"
-          >
-            {column.map((library) => (
-              <LinkTile
-                key={library.slug}
-                href={library.href}
-                label={library.label}
-                icon={library.icon}
-                active={activeLibrary === library.slug}
-                onPointerEnter={() => onLibraryPointerEnter(library.slug)}
-                onPointerLeave={() => onLibraryPointerLeave(library.slug)}
-                onFocus={() => onLibraryFocus(library.slug)}
-                onBlur={() => onLibraryBlur(library.slug)}
-              />
-            ))}
-          </div>
-        ))}
-      </div>
+      <TileColumnsGrid
+        columns={LIBRARY_COLUMNS}
+        renderTile={renderLibrary}
+        columnClassName="text-foreground-subtle"
+      />
     </section>
   )
 }
