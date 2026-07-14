@@ -39,7 +39,6 @@ const GLYPHS =
 const HORIZONTAL_STEP = 1.45
 const VERTICAL_STEP = 1.5
 const FIELD_PADDING = 0.65
-const PHRASE_BASELINE_OFFSET = 1.3
 const EMPTY_CELL_CHANCE = 0.14
 const GLYPH_CHANGE_CHANCE = 0.56
 const BLINK_OFF_CHANCE = 0.22
@@ -210,7 +209,9 @@ export const AgentGlyphField = ({ active = false, className }: AgentGlyphFieldPr
 
       cells = nextCells
 
-      const phraseY = height - fontSize * PHRASE_BASELINE_OFFSET
+      // Keep the phrase on the same baseline as the final matrix row. A separate
+      // bottom offset drifts between rows as the responsive canvas height changes.
+      const phraseY = padding + verticalStep * (rows - 0.5)
       const phraseLayout = getAgentPhraseLayout(columns)
       const phraseRowStep =
         phraseLayout.rowCount === 1

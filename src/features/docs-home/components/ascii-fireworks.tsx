@@ -107,7 +107,7 @@ export const AsciiFireworks = ({ onDone, className }: AsciiFireworksProps) => {
     const burst = (x: number, y: number, color: string, count: number, strength: number) => {
       for (let i = 0; i < count; i++) {
         const angle = (Math.PI * 2 * i) / count
-        const speed = strength * (0.72 + (i % 5) * 0.13)
+        const speed = strength
         particles.push({
           kind: "ray",
           x,
@@ -119,7 +119,7 @@ export const AsciiFireworks = ({ onDone, className }: AsciiFireworksProps) => {
           gravity: 0,
           drag: 0.985,
           color,
-          length: strength * (2.6 + (i % 3) * 0.45),
+          length: strength * 3.15,
         })
       }
     }
