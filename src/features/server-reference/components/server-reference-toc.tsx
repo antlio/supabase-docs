@@ -31,6 +31,7 @@ type ReferenceTocLinkProps = {
 }
 
 const SCROLL_ANCHOR_PX = 112
+const ACTIVE_ANCHOR_PX = 180
 
 const navigateToReferenceSection = (
   event: MouseEvent<HTMLAnchorElement>,
@@ -106,7 +107,7 @@ export const ServerReferenceToc = ({ className }: ServerReferenceTocProps) => {
     )
 
     const updateActiveSection = () => {
-      const anchor = SCROLL_ANCHOR_PX
+      const anchor = ACTIVE_ANCHOR_PX
       const passed = elements.filter((element) => element.getBoundingClientRect().top <= anchor)
       const next =
         passed.at(-1) ?? elements.find((element) => element.getBoundingClientRect().bottom > anchor)
