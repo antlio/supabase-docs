@@ -101,10 +101,18 @@ const ResourceItem = ({ resource }: { resource: Resource }) => (
 
 export const ResourcesSection = ({ className }: ResourcesSectionProps) => (
   <section className={cn("relative flex flex-col", className)}>
-    <SectionLabel label="additional resources" />
-    <div className="grid grid-cols-1 items-start border-x border-b border-border sm:grid-cols-2 lg:grid-cols-3">
+    <SectionLabel label="additional resources" className="border-b border-border" />
+    <div className="grid grid-cols-1 items-start sm:grid-cols-2 lg:grid-cols-3">
       {RESOURCE_COLUMNS.map((column, columnIndex) => (
-        <div key={column[0].slug} className="relative flex min-w-0 flex-col items-start gap-8 py-8">
+        <div
+          key={column[0].slug}
+          className={cn(
+            "relative flex min-w-0 flex-col items-start gap-8 border-b border-border py-8",
+            columnIndex === 0 && "sm:border-x lg:h-[243px]",
+            columnIndex === 1 && "sm:border-r lg:h-[243px] lg:border-l-0 lg:border-r-0",
+            columnIndex === 2 && "sm:border-x lg:h-[348px]",
+          )}
+        >
           {columnIndex === 0 ? <ScrollAccentAnchors corners={["top-left"]} /> : null}
           {column.map((resource) => (
             <ResourceItem key={resource.slug} resource={resource} />
