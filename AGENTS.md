@@ -2,7 +2,7 @@
 
 Supabase `/docs` revamp, a Next.js App Router project implementing the Paper design
 ["supabase doc v2 (review fixes)"](https://app.paper.design/file/01KX3TB05NJMABJD6V07JMZ8GV/1-0/ELD-0).
-Dark-only theme, all colors live as oklch tokens in [src/app/globals.css](src/app/globals.css).
+Light and dark themes, with all colors defined as oklch tokens in [src/app/theme.css](src/app/theme.css).
 
 ## Commands
 
