@@ -1,27 +1,17 @@
 import type { Metadata } from "next"
-import { Inter, Manrope, Roboto_Mono } from "next/font/google"
+import { GeistMono } from "geist/font/mono"
+import { GeistSans } from "geist/font/sans"
+import { AgentDirective } from "@/features/agent-docs/agent-directive"
 import "./globals.css"
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-})
-
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-})
-
-const robotoMono = Roboto_Mono({
-  variable: "--font-roboto-mono",
-  subsets: ["latin"],
-})
 
 export const metadata: Metadata = {
   title: "Supabase Docs",
   description: "Discover how to set up a database to an app making queries in just a few minutes.",
+  metadataBase: new URL("https://supabase.com"),
+  robots: { index: true, follow: true },
 }
 
+// Keep the storage key synchronized with theme-toggle.tsx.
 const THEME_SCRIPT = `
   try {
     const storedTheme = localStorage.getItem("supabase-docs-theme");
@@ -40,12 +30,15 @@ const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => (
     lang="en"
     data-theme="dark"
     suppressHydrationWarning
-    className={`${inter.variable} ${manrope.variable} ${robotoMono.variable} h-full antialiased`}
+    className={`${GeistSans.variable} ${GeistMono.variable} h-full antialiased`}
   >
     <head>
       <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
     </head>
-    <body className="flex min-h-full flex-col">{children}</body>
+    <body className="flex min-h-full flex-col">
+      <AgentDirective />
+      {children}
+    </body>
   </html>
 )
 

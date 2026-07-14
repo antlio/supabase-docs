@@ -7,8 +7,40 @@ body {
   overscroll-behavior-y: none;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-sans);
+  font-synthesis: none;
+}
+
+::selection {
+  background-color: var(--color-selection);
+}
+
+.code-copy-reveal {
+  transition: opacity 120ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-code-surface] .code-copy-reveal {
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  [data-code-surface]:hover .code-copy-reveal,
+  [data-code-surface]:focus-within .code-copy-reveal {
+    pointer-events: auto;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .code-copy-reveal {
+    transition-duration: 0ms;
+  }
 }
