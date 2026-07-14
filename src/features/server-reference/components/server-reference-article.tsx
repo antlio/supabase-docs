@@ -127,19 +127,21 @@ const DetailRows = ({ item }: { item: ServerReferenceItem }) => {
       <dl className="mt-2 divide-y divide-border border-t border-border">
         {parameters.map((parameter) => (
           <div key={parameter.name} className="py-5">
-            <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-              <dt className="min-w-0 font-mono text-[13px] font-medium leading-5 text-brand-foreground">
+            <dt className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+              <span className="min-w-0 font-mono text-[13px] font-medium leading-5 text-brand-foreground">
                 {parameter.name}
                 {parameter.optional && <span className="text-foreground-muted">?</span>}
-              </dt>
-              <dd className="min-w-0 break-words text-[13px] leading-5 text-foreground-muted">
+              </span>
+              <span className="min-w-0 break-words text-[13px] leading-5 text-foreground-muted">
                 {parameter.type}
-              </dd>
-            </div>
-            {parameter.description && <RichText text={parameter.description} className="mt-3" />}
-            {getParameterDetails(parameter.type).length > 0 && (
-              <ReferenceDetailDisclosure details={getParameterDetails(parameter.type)} />
-            )}
+              </span>
+            </dt>
+            <dd className="m-0">
+              {parameter.description && <RichText text={parameter.description} className="mt-3" />}
+              {getParameterDetails(parameter.type).length > 0 && (
+                <ReferenceDetailDisclosure details={getParameterDetails(parameter.type)} />
+              )}
+            </dd>
           </div>
         ))}
       </dl>

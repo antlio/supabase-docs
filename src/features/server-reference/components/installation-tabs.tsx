@@ -136,7 +136,7 @@ const ModeTab = ({ children, value }: { children: React.ReactNode; value: string
   <TabsTab
     value={value}
     className={cn(
-      "group flex h-8 items-center gap-2 rounded-xs bg-surface-raised px-3 text-[13px] font-medium text-foreground-muted",
+      "group flex h-8 items-center gap-2 rounded-xs bg-surface-raised px-3 text-[13px] font-medium text-foreground-subtle",
       "shadow-raised transition-colors duration-150 hover:text-foreground-soft",
       "data-[active]:text-brand-foreground",
     )}

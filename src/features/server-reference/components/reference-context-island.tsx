@@ -246,7 +246,7 @@ export const ReferenceContextIsland = ({ className, children }: ReferenceContext
       <div
         data-reference-context-island
         data-open={isOpen}
-        aria-hidden={!isOpen}
+        inert={!isOpen}
         className={cn(
           "pointer-events-none fixed z-[80] w-[min(34rem,calc(100vw-1.5rem))]",
           context?.placement === "above"
