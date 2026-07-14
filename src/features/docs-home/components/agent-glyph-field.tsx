@@ -192,25 +192,8 @@ export const AgentGlyphField = ({ active = false, className }: AgentGlyphFieldPr
       const now = performance.now()
       const nextCells: GlyphCell[] = []
 
-      for (let row = 0; row < rows; row++) {
-        for (let column = 0; column < columns; column++) {
-          if (Math.random() < EMPTY_CELL_CHANCE) continue
-          const alpha = randomBetween(MIN_ALPHA, MAX_ALPHA)
-          nextCells.push({
-            x: padding + horizontalStep * (column + 0.5),
-            y: padding + verticalStep * (row + 0.5),
-            glyph: randomGlyph(),
-            alpha,
-            targetAlpha: alpha,
-            nextChangeAt: now + randomBetween(MIN_CHANGE_MS, MAX_CHANGE_MS),
-          })
-        }
-      }
-
-      cells = nextCells
-
-      // Keep the phrase on the same baseline as the final matrix row. A separate
-      // bottom offset drifts between rows as the responsive canvas height changes.
+      // Keep the second random cell underneath produces two anti-aliased glyphs instead
+      // of a true character replacement
       const phraseY = padding + verticalStep * (rows - 0.5)
       const phraseLayout = getAgentPhraseLayout(columns)
       const phraseRowStep =
@@ -232,6 +215,28 @@ export const AgentGlyphField = ({ active = false, className }: AgentGlyphFieldPr
             row: Math.floor(index / columns),
           }))
         : phraseLayout.placements.map(({ column, row }) => ({ column, row }))
+      const phraseStartRow = Math.max(0, rows - phraseLayout.rowCount)
+      const phraseMatrixPositions = new Set(
+        phraseCellPositions.map(({ column, row }) => `${phraseStartRow + row}:${column}`),
+      )
+
+      for (let row = 0; row < rows; row++) {
+        for (let column = 0; column < columns; column++) {
+          if (phraseMatrixPositions.has(`${row}:${column}`)) continue
+          if (Math.random() < EMPTY_CELL_CHANCE) continue
+          const alpha = randomBetween(MIN_ALPHA, MAX_ALPHA)
+          nextCells.push({
+            x: padding + horizontalStep * (column + 0.5),
+            y: padding + verticalStep * (row + 0.5),
+            glyph: randomGlyph(),
+            alpha,
+            targetAlpha: alpha,
+            nextChangeAt: now + randomBetween(MIN_CHANGE_MS, MAX_CHANGE_MS),
+          })
+        }
+      }
+
+      cells = nextCells
 
       phraseCells = phraseCellPositions.map(({ column, row }) => {
         const alpha = randomBetween(MIN_ALPHA, MAX_ALPHA)
