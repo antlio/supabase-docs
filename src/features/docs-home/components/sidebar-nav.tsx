@@ -188,7 +188,7 @@ export const SidebarNav = ({ className, activeHref }: SidebarNavProps) => (
             <CollapsibleTrigger className={cn(groupIsActive && "text-foreground")}>
               {group.label}
             </CollapsibleTrigger>
-            <CollapsiblePanel>
+            <CollapsiblePanel className="transition-[height,opacity] data-[ending-style]:opacity-0 data-[starting-style]:opacity-0">
               <ul
                 className={cn(
                   "flex flex-col border-l border-border pb-1",
