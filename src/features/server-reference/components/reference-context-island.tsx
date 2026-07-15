@@ -92,8 +92,15 @@ export const ReferenceContextIsland = ({ className, children }: ReferenceContext
     highlightExitTimeoutRef.current = null
   }
 
-  const dismiss = () => {
+  const dismiss = ({ clearHighlightImmediately = false } = {}) => {
     cancelPendingHighlightClear()
+    if (clearHighlightImmediately) {
+      setIsHighlightVisible(false)
+      setIsOpen(false)
+      setIsSent(false)
+      return
+    }
+
     highlightExitTimeoutRef.current = window.setTimeout(() => {
       setIsHighlightVisible(false)
       highlightExitTimeoutRef.current = null
@@ -169,7 +176,7 @@ export const ReferenceContextIsland = ({ className, children }: ReferenceContext
 
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if ((event.target as Element).closest("[data-reference-context-island]")) return
-    if (isOpen) dismiss()
+    if (isOpen) dismiss({ clearHighlightImmediately: true })
   }
 
   const handlePointerUp = (event: PointerEvent<HTMLDivElement>) => {
@@ -201,7 +208,9 @@ export const ReferenceContextIsland = ({ className, children }: ReferenceContext
     const handleViewportChange = () => dismiss()
     const handleDocumentPointerDown = (event: globalThis.PointerEvent) => {
       const target = event.target
-      if (target instanceof Node && !rootRef.current?.contains(target)) dismiss()
+      if (target instanceof Node && !rootRef.current?.contains(target)) {
+        dismiss({ clearHighlightImmediately: true })
+      }
     }
     const handleEscape = (event: globalThis.KeyboardEvent) => {
       if (event.key === "Escape") dismiss()
