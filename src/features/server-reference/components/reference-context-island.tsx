@@ -274,7 +274,7 @@ export const ReferenceContextIsland = ({ className, children }: ReferenceContext
             "motion-reduce:transition-none motion-reduce:data-[open=false]:blur-0",
           )}
         >
-          <div className="flex min-w-0 items-center border-b border-border px-3 py-2">
+          <div className="flex min-w-0 items-center border-b border-border p-2">
             <span
               className={cn(
                 "max-w-full truncate whitespace-nowrap rounded-xs bg-surface-raised px-1.5 py-0.5",
@@ -287,7 +287,7 @@ export const ReferenceContextIsland = ({ className, children }: ReferenceContext
 
           <form onSubmit={handleSubmit}>
             <ToolbarRoot
-              className="group relative h-11 gap-2 px-3"
+              className="group relative h-12 gap-2 px-2"
               aria-label="Ask about selected reference text"
             >
               <TerminalCursorMirror value={query} />
