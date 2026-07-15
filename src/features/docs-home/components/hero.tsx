@@ -48,7 +48,7 @@ export const Hero = ({ className }: HeroProps) => {
   return (
     <section
       className={cn(
-        "relative flex flex-col items-stretch gap-6 border-b border-border px-4 pt-8 sm:border-x sm:px-8 xl:flex-row xl:items-start xl:gap-10 xl:py-[18px] xl:pl-8 xl:pr-[18px]",
+        "relative flex flex-col items-stretch gap-6 border-b border-border px-4 pt-8 sm:border-x sm:px-8 xl:flex-row xl:items-start xl:gap-10 xl:pt-4.5 xl:pb-3 xl:pl-8 xl:pr-4.5",
         className,
       )}
     >
