@@ -276,12 +276,12 @@ const ServerReferenceActions = ({ section }: { section: ServerReferenceSection }
       aria-hidden={!section.sourceUrl}
       tabIndex={section.sourceUrl ? undefined : -1}
       className={cn(
-        "flex h-11 min-w-11 shrink-0 items-center justify-center gap-1.5 rounded-xs px-2 text-xs outline-none sm:h-7 sm:min-w-0",
+        "flex h-11 min-w-11 shrink-0 items-center justify-center gap-1.5 rounded-xs px-2 text-[13px] font-medium leading-[1.1] outline-none sm:h-7 sm:min-w-0",
         "transition-[background-color,color,opacity,transform,filter] duration-200 ease-out",
         "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent",
         section.sourceUrl
           ? "text-foreground-muted hover:bg-foreground/[0.04] hover:text-foreground-soft"
-          : "pointer-events-none translate-y-1 opacity-0 blur-sm",
+          : "pointer-events-none translate-y-1 opacity-0 blur-[1px]",
       )}
     >
       <GitHubIcon className="size-3.5" />
