@@ -182,13 +182,15 @@ export const AgentGlyphField = ({ active = false, className }: AgentGlyphFieldPr
 
     const seedCells = () => {
       const preferredHorizontalStep = fontSize * HORIZONTAL_STEP
-      const verticalStep = fontSize * VERTICAL_STEP
+      const preferredVerticalStep = fontSize * VERTICAL_STEP
       const padding = fontSize * FIELD_PADDING
       const availableWidth = width - padding * 2
+      const availableHeight = height - padding * 2
       const baseColumns = Math.max(1, Math.floor(availableWidth / preferredHorizontalStep))
       const columns = baseColumns + EDGE_COLUMN_COUNT * 2
       const horizontalStep = availableWidth / columns
-      const rows = Math.max(1, Math.floor((height - padding * 2) / verticalStep))
+      const rows = Math.max(1, Math.floor(availableHeight / preferredVerticalStep))
+      const verticalStep = availableHeight / rows
       const now = performance.now()
       const nextCells: GlyphCell[] = []
 
