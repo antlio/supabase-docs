@@ -1,6 +1,6 @@
 "use client"
 
-import { Toggle as BaseToggle } from "@base-ui-components/react/toggle"
+import { Toggle as BaseToggle } from "@base-ui/react/toggle"
 import { cn } from "@/lib/utils"
 
 type ToggleProps = React.ComponentProps<typeof BaseToggle>

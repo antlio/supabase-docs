@@ -1,6 +1,6 @@
 "use client"
 
-import { Tabs as BaseTabs } from "@base-ui-components/react/tabs"
+import { Tabs as BaseTabs } from "@base-ui/react/tabs"
 import { cn } from "@/lib/utils"
 
 type TabsRootProps = React.ComponentProps<typeof BaseTabs.Root>
